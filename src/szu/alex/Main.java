@@ -10,7 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class Main {
-
+//lol
     public static void main(String[] args) throws Exception {
         JSAP jsap = new JSAP();
         UnflaggedOption filepath = new UnflaggedOption("Path")
@@ -21,16 +21,12 @@ public class Main {
         filepath.setHelp("Specify the path of the directory you wish to list.");
         jsap.registerParameter(filepath);
 
-        QualifiedSwitch all = (QualifiedSwitch)
-                (new QualifiedSwitch("all")
+        Switch all = new Switch("All")
                         .setShortFlag('a')
-                        .setLongFlag("all")
-                        .setList(true)
-                        .setListSeparator(','));
+                        .setLongFlag("all");
         all.setHelp("Use this switch to display all files, including hidden files and junctions or specify exactly which types of files you wish to display.");
+
         jsap.registerParameter(all);
-
-
 
         JSAPResult config = jsap.parse(args);
 
