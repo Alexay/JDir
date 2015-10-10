@@ -1,8 +1,6 @@
 <component name="libraryTable">
-  <library name="jopt-simple-4.9">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/jopt-simple-4.9.jar!/" />
-    </CLASSES>
+  <library name="jopt-simple-4.9-sources">
+    <CLASSES />
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/lib/jopt-simple-4.9-sources.jar!/" />
