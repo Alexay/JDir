@@ -7,6 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="net.sf.jopt-simple:jopt-simple:4.9" level="project" />
+    <orderEntry type="library" exported="" name="jopt-simple-4.9" level="project" />
+    <orderEntry type="library" exported="" name="jopt-simple-4.9-sources" level="project" />
+    <orderEntry type="library" exported="" name="jopt-simple-4.9-javadoc" level="project" />
   </component>
 </module>
