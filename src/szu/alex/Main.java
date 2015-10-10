@@ -30,16 +30,21 @@ public class Main {
         else {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(localDir)) {
 
-                if (options.has("b")) {
+                // The display filtering option. This will check for other provided arguments
+                if(options.has("a")) {
                     for (Path file : stream) {
                         System.out.println(file.getFileName());
                     }
                 }
-                else if(options.has("a")) {
+
+                // The "Bare" option, lists everything raw
+                else if (options.has("b")) {
                     for (Path file : stream) {
                         System.out.println(file.getFileName());
                     }
                 }
+
+                // If the user doesn't specify any arguments, the app will just run identically to the Windows DIR
                 else {
                     for (Path file : stream) {
                         BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
