@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JSAP">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/JSAP-2.11.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
