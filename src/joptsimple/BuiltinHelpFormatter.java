@@ -52,6 +52,7 @@ import static joptsimple.internal.Strings.*;
  *
  * @author <a href="mailto:pholser@alumni.rice.edu">Paul Holser</a>
  */
+@SuppressWarnings("ALL")
 public class BuiltinHelpFormatter implements HelpFormatter {
     private final Rows nonOptionRows;
     private final Rows optionRows;
