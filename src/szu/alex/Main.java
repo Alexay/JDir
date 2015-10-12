@@ -13,105 +13,108 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        Path localDir = Paths.get(".");
 
+        Path localDir = Paths.get(".");
         OptionParser parser = new OptionParser("a::b?*");
 
-        OptionSet options = parser.parse(args);
-
+        parser.allowsUnrecognizedOptions();
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("b", "Bare output without metadata");
         parser.accepts("?", "Displays this help prompt");
 
+        OptionSet options = parser.parse(args);
+
+        //  In case the user specifies a path instead of just running the command locally, create an array out of the parsed directory strings.
+        String[] dirStringArray = options.nonOptionArguments().toArray(new String[0]);
+
+        // Then, we create an array of paths by converting each individual string into a path, but the user may enter the path incorrectly, and we must account for that exception.
+        Path[] dirPathArray = new Path[dirStringArray.length];
+        for (int k = 0; k < dirStringArray.length; k++) {
+            try {
+                dirPathArray[k] = Paths.get(dirStringArray[k]);
+            } catch (InvalidPathException x) {
+                System.out.println("Sorry, but " + dirStringArray[k] + " is an invalid path. Ignoring...");
+            }
+        }
+        System.out.println(options.nonOptionArguments().isEmpty()?1:0);
+
         if (options.has("?"))
             parser.printHelpOn(System.out);
         else {
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(localDir)) {
+            for (int l = 0; l < dirPathArray.length; l++) {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream((options.nonOptionArguments().isEmpty()?localDir:dirPathArray[l]))) {
+                    for (Path file : stream) {
+                        // First, we'll initialize the different variables that may occur in the filtering
+                        DosFileAttributes attr = Files.readAttributes(file, DosFileAttributes.class);
 
-                // The display filtering option.
-                if(options.has("a")) {
+                        // Is it a directory?
+                        boolean isDir = attr.isDirectory();
 
-                    // Does the option have any arguments for more narrow filtering?
-                    if (options.hasArgument("a")) {
-                        // OK, it does, now we make the long print statement that will be different depending on the selected filtering arguments.
-                        for (Path file : stream) {
-                            // First, we'll initialize the different variables that may occur in the filtering
-                            DosFileAttributes attr = Files.readAttributes(file, DosFileAttributes.class);
+                        // Is it hidden or system file?
+                        boolean isHidden = attr.isHidden();
 
-                            // Is it a directory?
-                            boolean isDir = attr.isDirectory();
+                        //Is it a system file?
+                        boolean isSystem = attr.isSystem();
 
-                            // Is it hidden or system file?
-                            boolean isHidden = attr.isHidden();
+                        // Is it reparse point / junction?
+                        boolean isJunction = attr.isSymbolicLink();
 
-                            //Is it a system file?
-                            boolean isSystem = attr.isSystem();
+                        // Is it read-only?
+                        boolean isReadonly = attr.isReadOnly();
 
-                            // Is it reparse point / junction?
-                            boolean isJunction = attr.isSymbolicLink();
+                        // Is it ready for archiving?
+                        boolean isForArchiving = attr.isArchive();
 
-                            // Is it read-only?
-                            boolean isReadonly = attr.isReadOnly();
+                        // Let's parse the argument we got
+                        List arguments = options.valuesOf("a");
 
-                            // Is it ready for archiving?
-                            boolean isForArchiving = attr.isArchive();
+                        // Now that we have all the commonly used variables initialized, we begin the "if" statement tree.
+                        // Firstly, the display filtering option.
+                        if (options.has("a")) {
 
-                            // Let's parse the argument we got
-                            List arguments = options.valuesOf("a");
+                            // Does the option have any arguments for more specific filtering?
+                            if (options.hasArgument("a")) {
 
-                            for (int g = 0; g<arguments.size(); g++)
-                                System.out.println(arguments.get(g));
-
-                            // This huge "if" statement will filter out unwanted files
-                            if ((arguments.contains("d") && !isDir) || (arguments.contains("h") && !isHidden) || (arguments.contains("s") && !isSystem) || (arguments.contains("l") && !isJunction) || (arguments.contains("r") && !isReadonly) || (arguments.contains("a") && !isForArchiving))
-                                continue;
+                                // OK, it does, now we make the long print statement that will be different depending on the selected filtering arguments.
+                                // This huge "if" statement will filter out unwanted files
+                                if ((arguments.contains("d") && !isDir) || (arguments.contains("h") && !isHidden) || (arguments.contains("s") && !isSystem) || (arguments.contains("l") && !isJunction) || (arguments.contains("r") && !isReadonly) || (arguments.contains("a") && !isForArchiving))
+                                    continue;
+                            }
 
                             // Initializing time of last modification
                             FileTime lastModifiedFileTime = attr.lastModifiedTime();
                             DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                             String lastModified = df.format(lastModifiedFileTime.toMillis());
 
-
                             // OK, we've initialized everything we need, let's print!
                             System.out.println(
-                                    lastModified + "    " +
-                                            (isDir?"<DIR>       ":"          " + attr.size()) + " " +
-                                            file.getFileName());
-                        }
-                    }
+                                            lastModified + "    " +
+                                            (isDir ? "<DIR>       " : "          " + attr.size()) + " " +
+                                            file.getFileName()
+                            );
 
-                    // If it doesn't then just display everything
-                    else {
-                        for (Path file : stream) {
+                        }
+                        // The "Bare" option, lists everything raw
+                        else if (options.has("b")) {
                             System.out.println(file.getFileName());
                         }
-                    }
-                }
-                // The "Bare" option, lists everything raw
-                else if (options.has("b")) {
-                    for (Path file : stream) {
-                        System.out.println(file.getFileName());
-                    }
-                }
 
-                // If the user doesn't specify any arguments, the app will just run identically to the Windows DIR, not displaying hidden files or paths
-                else {
-                    for (Path file : stream) {
-                        DosFileAttributes attr = Files.readAttributes(file, DosFileAttributes.class);
-
-                        // Initializing time of last modification
-                        FileTime lastModifiedFileTime = attr.lastModifiedTime();
-                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                        String lastModified = df.format(lastModifiedFileTime.toMillis());
-                        System.out.println(lastModified + "     " + file.getFileName());
+                        // If the user doesn't specify any arguments, the app will just run identically to the Windows DIR, not displaying hidden files or paths
+                        else {
+                            // Initializing time of last modification
+                            FileTime lastModifiedFileTime = attr.lastModifiedTime();
+                            DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                            String lastModified = df.format(lastModifiedFileTime.toMillis());
+                            System.out.println(lastModified + "     " + file.getFileName());
+                        }
                     }
-                }
 
-            } catch (IOException | DirectoryIteratorException x) {
-                System.err.println(x);
+                } catch (IOException | DirectoryIteratorException x) {
+                    System.err.println(x);
+                } catch (NullPointerException z) {}
             }
+
+
         }
-
-
     }
 }
