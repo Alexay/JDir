@@ -9,11 +9,10 @@ import java.nio.file.attribute.DosFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 
-public class Main {
+public class Test {
 
     public static void main(String[] args) throws Exception {
         Path localDir = Paths.get(".");
@@ -56,6 +55,8 @@ public class Main {
                         // First, we'll initialize the different variables that may occur in the filtering
                         DosFileAttributes attr = Files.readAttributes(file, DosFileAttributes.class);
 
+                        String timeStamp = T.parseTime(attr, options);
+
                         // Is it a directory?
                         boolean isDir = attr.isDirectory();
 
@@ -89,18 +90,13 @@ public class Main {
 
                                 // OK, it does, now we make the long print statement that will be different depending on the selected filtering arguments.
                                 // This huge "if" statement will filter out unwanted files
-                                if ((arguments.contains("d") && !isDir) || (arguments.contains("h") && !isHidden) || (arguments.contains("s") && !isSystem) || (arguments.contains("l") && !isJunction) || (arguments.contains("r") && !isReadonly) || (arguments.contains("a") && !isForArchiving))
+                                if ((arguments.contains("d") && !isDir) || (arguments.contains("h") && !isHidden) || (arguments.contains("s") && !isSystem) || (arguments.contains("l") && !isJunction) || (arguments.contains("r") && !isReadonly) || (arguments.contains("a") && !isForArchiving) || (arguments.contains("i") && isIndexed))
                                     continue;
                             }
 
-                            // Initializing time of last modification
-                            FileTime lastModifiedFileTime = attr.lastModifiedTime();
-                            DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                            String lastModified = df.format(lastModifiedFileTime.toMillis());
-
                             // OK, we've initialized everything we need, let's print!
                             System.out.println(
-                                    lastModified + "    " +
+                                    timeStamp + "    " +
                                             (isDir ? (isJunction ? "<JUNCTION>  " : "<DIR>       ") : "          " + attr.size()) + " " +
                                             file.getFileName()
                             );
@@ -140,6 +136,8 @@ public class Main {
                             // First, we'll initialize the different variables that may occur in the filtering
                             DosFileAttributes attr = Files.readAttributes(file, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
 
+                            String timeStamp = T.parseTime(attr, options);
+
                             // Is it a directory?
                             boolean isDir = attr.isDirectory();
 
@@ -168,6 +166,7 @@ public class Main {
                             boolean isForArchiving = attr.isArchive();
 
                             // Is it indexed?
+
                             boolean isIndexed = false;
                             if (DosFileAttributes.class.isInstance(attr)) {
                                 isIndexed = true;
@@ -197,16 +196,11 @@ public class Main {
                                         continue;
                                 }
 
-                                // Initializing time of last modification
-                                FileTime lastModifiedFileTime = attr.lastModifiedTime();
-                                DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                                String lastModified = df.format(lastModifiedFileTime.toMillis());
-
 
 
                                 // OK, we've initialized everything we need, let's print!
                                 System.out.println(
-                                        lastModified + /*" " + test3 +*/ "    " +
+                                        timeStamp + "    " +
                                                 (isDir ? (isJunction ? "<JUNCTION>  " : "<DIR>       ") : "          " + attr.size()) + " " +
                                                 file.getFileName()
                                 );
