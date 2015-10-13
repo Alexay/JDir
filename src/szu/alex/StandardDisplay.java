@@ -7,9 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -17,7 +14,7 @@ import java.util.ArrayList;
  */
 
 public class StandardDisplay {
-    public void display(ArrayList<Path> filesForDisplay, OptionSet options) {
+    public static void display(ArrayList<Path> filesForDisplay, OptionSet options) {
 
         try {
             for (Path aPath : filesForDisplay) {
@@ -37,8 +34,8 @@ public class StandardDisplay {
                 // OK, we've initialized everything we need, let's print!
                 System.out.println(
                         timeStamp + "    " +
-                                (isDir ? (isJunction ? "<JUNCTION>  " : "<DIR>       ") : "          " + attr.size()) + " " +
-                                aPath.getFileName()
+                                (isDir ? (isJunction ? "<JUNCTION>  " : "<DIR>       ") : "          ") + (options.has("c")?C.thousandSeparate(attr.size()):attr.size()) + " " +
+                                (options.has("l")?aPath.getFileName().toString().toLowerCase():aPath.getFileName())
                 );
             }
         } catch (IOException e) {
