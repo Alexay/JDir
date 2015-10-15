@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * LOL
- */
+ * This is the filter that allows the user to only display certain files
+ *
+ * USED BY: Main.java
+ **/
 
 
 public class A {
@@ -43,23 +45,33 @@ public class A {
                 // Is it indexed?
                 boolean isIndexed = IndexedAttributeReader.read(attr);
 
-                // We check if the user gave this option any arguments, and filter accordingly.
-                if (options.hasArgument("a")) {
-                    List arguments = options.valuesOf("a");
 
-                    // This huge "if" statement will filter out unwanted files
-                    if (!((arguments.contains("d") && !isDir) || (arguments.contains("h") && !isHidden) || (arguments.contains("s") && !isSystem) || (arguments.contains("l") && !isJunction) || (arguments.contains("r") && !isReadonly) || (arguments.contains("a") && !isForArchiving) || (arguments.contains("i") && isIndexed)))
-                        filteredFileArray.add(file); //continue;
-                   // else
-                       // filteredFileArray.add(file);
-                }
 
-                // If no arguments are given, we filter for the default configuration.
-                else {
+                // If neither options nor arguments are given, we filter for the default configuration.
+                if (!options.has("a")) {
                     if (!isHidden || !isSystem)
                         filteredFileArray.add(file);
                 }
 
+                // We check if the user gave this option any arguments, and filter accordingly.
+                else if (options.hasArgument("a")) {
+                    List arguments = options.valuesOf("a");
+
+                    // This huge "if" statement will filter out unwanted files
+                    if (!((arguments.contains("d") && !isDir) || (arguments.contains("-d") && isDir) ||
+                            (arguments.contains("h") && !isHidden) || (arguments.contains("-h") && isHidden) ||
+                            (arguments.contains("s") && !isSystem) || (arguments.contains("-s") && isSystem) ||
+                            (arguments.contains("l") && !isJunction) || (arguments.contains("-l") && isJunction) ||
+                            (arguments.contains("r") && !isReadonly) || (arguments.contains("-r") && isReadonly) ||
+                            (arguments.contains("a") && !isForArchiving) || (arguments.contains("-a") && isForArchiving) ||
+                            (arguments.contains("i") && isIndexed) || (arguments.contains("-i") && !isIndexed))
+                            )
+                        filteredFileArray.add(file);
+                }
+
+                // If no arguments are given to the "a" option, we don't filter at all.
+                else
+                    filteredFileArray.add(file);
             }
         } catch (IOException | DirectoryIteratorException x) {
             System.err.println(x);

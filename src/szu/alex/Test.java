@@ -11,7 +11,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         Path localDir = Paths.get(".");
-        OptionParser parser = new OptionParser("a::bwdc4tl?*");
+        OptionParser parser = new OptionParser("a::bwdc4t:l?*");
 
         parser.allowsUnrecognizedOptions();
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
@@ -19,8 +19,6 @@ public class Test {
         parser.accepts("?", "Displays this help prompt");
 
         OptionSet options = parser.parse(args);
-
-        //String[] dirStringArray = options.nonOptionArguments().toArray(new String[options.nonOptionArguments().size()]);
 
         // In case the user specifies a path instead of just running the command locally,
         // create an array out of the parsed directory strings.
@@ -45,7 +43,12 @@ public class Test {
             // This is the case if the user doesn't give any paths to the command and just wants to run in the local path
             if (options.nonOptionArguments().isEmpty()) {
                 ArrayList<Path> toDisplay = A.filter(localDir, options);
-                StandardDisplay.display(toDisplay, options);
+
+                if (options.has("b"))
+                    B.display(toDisplay, options);
+
+                else
+                    StandardDisplay.display(toDisplay, options);
             }
 
             // This is the case if the user actually provides a path.
@@ -55,7 +58,14 @@ public class Test {
                 for (int i = 0; i < dirPathArray.size(); i++) {
                     Path pathToFilter = dirPathArray.get(i);
                     ArrayList<Path> toDisplay = A.filter(pathToFilter, options);
-                    StandardDisplay.display(toDisplay, options);
+
+                    // The "Bare" display option, if specified, takes precedence over other display options.
+                    if (options.has("b"))
+                        B.display(toDisplay, options);
+
+                    // If no other display options are specified, we default to the standard display.
+                    else
+                        StandardDisplay.display(toDisplay, options);
                 }
             }
         }

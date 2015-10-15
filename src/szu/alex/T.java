@@ -37,7 +37,7 @@ public class T {
         }
 
         // If the user provided the "a" argument, we return the last access time.
-        else   {  // ((options.valueOf("t") == "a") || (options.valueOf("t") == "A"))
+        else{  // ((options.valueOf("t") == "a") || (options.valueOf("t") == "A"))
             FileTime lastAccessFileTime = attr.lastAccessTime();
             DateFormat df1 = options.has("4")?DateFormat.getDateInstance(DateFormat.MEDIUM):DateFormat.getDateInstance(DateFormat.SHORT);
             DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
