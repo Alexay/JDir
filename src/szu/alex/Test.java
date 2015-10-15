@@ -40,15 +40,20 @@ public class Test {
 
         // Now that we've handled the "help" option, let's get down to business!
         else {
+
             // This is the case if the user doesn't give any paths to the command and just wants to run in the local path
             if (options.nonOptionArguments().isEmpty()) {
-                ArrayList<Path> toDisplay = A.filter(localDir, options);
+                ArrayList<Path> toArray = A.filter(localDir, options);
+
+                // Let's convert our ArrayList to a normal array to save some memory.
+                Path[] toSortAndDisplay = new Path[toArray.size()];
+                toArray.toArray(toSortAndDisplay);
 
                 if (options.has("b"))
-                    B.display(toDisplay, options);
+                    B.display(toSortAndDisplay, options);
 
                 else
-                    StandardDisplay.display(toDisplay, options);
+                    StandardDisplay.display(toSortAndDisplay, options);
             }
 
             // This is the case if the user actually provides a path.
@@ -57,15 +62,19 @@ public class Test {
                 // For each given path we will filter.
                 for (int i = 0; i < dirPathArray.size(); i++) {
                     Path pathToFilter = dirPathArray.get(i);
-                    ArrayList<Path> toDisplay = A.filter(pathToFilter, options);
+                    ArrayList<Path> toArray = A.filter(pathToFilter, options);
+
+                    // Let's convert our ArrayList to a normal array to save some memory.
+                    Path[] toSortAndDisplay = new Path[toArray.size()];
+                    toArray.toArray(toSortAndDisplay);
 
                     // The "Bare" display option, if specified, takes precedence over other display options.
                     if (options.has("b"))
-                        B.display(toDisplay, options);
+                        B.display(O.sort(toSortAndDisplay, options), options);
 
                     // If no other display options are specified, we default to the standard display.
                     else
-                        StandardDisplay.display(toDisplay, options);
+                        StandardDisplay.display(O.sort(toSortAndDisplay, options), options);
                 }
             }
         }

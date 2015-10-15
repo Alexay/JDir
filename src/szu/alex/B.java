@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class B {
 
-    public static void display(ArrayList<Path> filesForDisplay, OptionSet options) {
+    public static void display(Path[] filesForDisplay, OptionSet options) {
         for (Path aPath : filesForDisplay) {
             System.out.println((options.has("l") ? aPath.getFileName().toString().toLowerCase() : aPath.getFileName()));
         }

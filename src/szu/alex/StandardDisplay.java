@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 
 public class StandardDisplay {
-    public static void display(ArrayList<Path> filesForDisplay, OptionSet options) {
+    public static void display(Path[] filesForDisplay, OptionSet options) {
 
         int dirCounter = 0;
 
@@ -50,7 +50,7 @@ public class StandardDisplay {
         }
 
         // Here we initializer the directory
-        int nonDirCounter = filesForDisplay.size()-dirCounter;
+        int nonDirCounter = filesForDisplay.length-dirCounter;
         System.out.println(dirCounter);
         System.out.println(nonDirCounter);
 
