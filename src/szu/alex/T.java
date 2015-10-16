@@ -19,7 +19,7 @@ public class T {
 
         // If the user provided no "t" option, or provided no argument to the "t" option
         // or has provided the "w" argument, we return the default timestamp - last modified.
-        if (!options.has("t") || (options.has("t") && !options.hasArgument("t")) || (options.valueOf("t") == "w") || (options.valueOf("t") == "W")) {
+        if (!options.has("t") || (options.has("t") && !options.hasArgument("t"))) {
             FileTime lastModifiedFileTime = attr.lastModifiedTime();
             DateFormat df1 = options.has("4")?DateFormat.getDateInstance(DateFormat.MEDIUM):DateFormat.getDateInstance(DateFormat.SHORT);
             DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -28,7 +28,7 @@ public class T {
         }
 
         // If the user provided the "c" argument, we return the creation time.
-        else if ((options.valueOf("t") == "c") || (options.valueOf("t") == "C")) {
+        else if (options.valueOf("t") == "c") {
             FileTime creationFileTime = attr.creationTime();
             DateFormat df1 = options.has("4")?DateFormat.getDateInstance(DateFormat.MEDIUM):DateFormat.getDateInstance(DateFormat.SHORT);
             DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -37,7 +37,7 @@ public class T {
         }
 
         // If the user provided the "a" argument, we return the last access time.
-        else{  // ((options.valueOf("t") == "a") || (options.valueOf("t") == "A"))
+        else{  // (options.valueOf("t") == "a")
             FileTime lastAccessFileTime = attr.lastAccessTime();
             DateFormat df1 = options.has("4")?DateFormat.getDateInstance(DateFormat.MEDIUM):DateFormat.getDateInstance(DateFormat.SHORT);
             DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);

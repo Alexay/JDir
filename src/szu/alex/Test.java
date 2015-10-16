@@ -11,7 +11,12 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         Path localDir = Paths.get(".");
-        OptionParser parser = new OptionParser("a::bwdc4t:l?*");
+
+        // Convert the user input to lowercase for easier parsing and simpler data flow.
+        for (int iter = 0; iter < args.length; iter++)
+            args[iter] = args[iter].toLowerCase();
+
+        OptionParser parser = new OptionParser("a::o::bwdnc4t:l?*");
 
         parser.allowsUnrecognizedOptions();
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
@@ -52,6 +57,9 @@ public class Test {
                 if (options.has("b"))
                     B.display(toSortAndDisplay, options);
 
+                else if (options.has("n"))
+                    N.display(toSortAndDisplay, options);
+
                 else
                     StandardDisplay.display(toSortAndDisplay, options);
             }
@@ -71,6 +79,10 @@ public class Test {
                     // The "Bare" display option, if specified, takes precedence over other display options.
                     if (options.has("b"))
                         B.display(O.sort(toSortAndDisplay, options), options);
+
+                    // The old-school win95/MSDOS display option.
+                    else if (options.has("n"))
+                        N.display(toSortAndDisplay, options);
 
                     // If no other display options are specified, we default to the standard display.
                     else
