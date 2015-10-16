@@ -78,9 +78,8 @@ public class O {
         // time attribute.
         else if (arguments.contains("d") || arguments.contains("-d")) {
             Arrays.sort(toSort,  (path1, path2) -> {
-
-                if (options.has("t")) {
-                    try {
+                try {
+                    if (options.has("t")) {
                         DosFileAttributes attr1 = Files.readAttributes(path1, DosFileAttributes.class);
                         DosFileAttributes attr2 = Files.readAttributes(path2, DosFileAttributes.class);
 
@@ -89,33 +88,27 @@ public class O {
                                 return (attr2.creationTime().compareTo(attr1.creationTime()));
                             else
                                 return (attr1.creationTime().compareTo(attr2.creationTime()));
-                        }
-                        else if (options.valueOf("t") == "a") {
+                        } else if (options.valueOf("t") == "a") {
                             if (arguments.contains("-d"))
                                 return (attr2.lastAccessTime().compareTo(attr1.lastAccessTime()));
                             else
                                 return (attr1.lastAccessTime().compareTo(attr2.lastAccessTime()));
-                        }
-                        else {
+                        } else {
                             if (arguments.contains("-d"))
                                 return (attr2.lastAccessTime().compareTo(attr1.lastModifiedTime()));
                             else
                                 return (attr1.lastAccessTime().compareTo(attr2.lastModifiedTime()));
                         }
-
-                    } catch (IOException x) {
-                        System.err.println(x);
+                    } else {
+                        if (arguments.contains("-d"))
+                            return Long.compare(path2.toFile().lastModified(), path1.toFile().lastModified());
+                        else
+                            return Long.compare(path1.toFile().lastModified(), path2.toFile().lastModified());
                     }
-                }
-
-                else {
-                    if (arguments.contains("-d"))
-                        return Long.compare(path2.toFile().lastModified(), path1.toFile().lastModified());
-                    else
-                        return Long.compare(path1.toFile().lastModified(), path2.toFile().lastModified());
+                } catch (IOException x) {
+                    System.err.println(x);
                 }
                 return 0;
-
             });
         }
 

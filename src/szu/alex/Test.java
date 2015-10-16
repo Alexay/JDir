@@ -21,7 +21,7 @@ public class Test {
         parser.allowsUnrecognizedOptions();
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
-        parser.accepts("t", "Time").withOptionalArg();
+        parser.accepts("t", "Time").withOptionalArg().defaultsTo("w");
         parser.accepts("b", "Bare output without metadata");
         parser.accepts("?", "Displays this help prompt");
 
