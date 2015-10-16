@@ -20,6 +20,8 @@ public class Test {
 
         parser.allowsUnrecognizedOptions();
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
+        parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
+        parser.accepts("t", "Time").withOptionalArg();
         parser.accepts("b", "Bare output without metadata");
         parser.accepts("?", "Displays this help prompt");
 
@@ -54,14 +56,17 @@ public class Test {
                 Path[] toSortAndDisplay = new Path[toArray.size()];
                 toArray.toArray(toSortAndDisplay);
 
+                // The "Bare" display option, if specified, takes precedence over other display options.
                 if (options.has("b"))
-                    B.display(toSortAndDisplay, options);
+                    B.display(O.sort(toSortAndDisplay, options), options);
 
+                // The old-school win95/MS-DOS display option.
                 else if (options.has("n"))
-                    N.display(toSortAndDisplay, options);
+                    N.display(O.sort(toSortAndDisplay, options), options);
 
+                // If no other display options are specified, we default to the standard display.
                 else
-                    StandardDisplay.display(toSortAndDisplay, options);
+                    StandardDisplay.display(O.sort(toSortAndDisplay, options), options);
             }
 
             // This is the case if the user actually provides a path.
@@ -80,9 +85,9 @@ public class Test {
                     if (options.has("b"))
                         B.display(O.sort(toSortAndDisplay, options), options);
 
-                    // The old-school win95/MSDOS display option.
+                    // The old-school win95/MS-DOS display option.
                     else if (options.has("n"))
-                        N.display(toSortAndDisplay, options);
+                        N.display(O.sort(toSortAndDisplay, options), options);
 
                     // If no other display options are specified, we default to the standard display.
                     else

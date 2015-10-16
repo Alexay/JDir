@@ -2,12 +2,11 @@ package szu.alex;
 
 import joptsimple.OptionSet;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.DosFileAttributes;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -18,6 +17,7 @@ import java.util.List;
 public class O {
 
     public static Path[] sort(Path[] toSort, OptionSet options) {
+
         List arguments = options.valuesOf("o");
 
         // This is the algorithm for sorting by name. Since the array is already sorted
@@ -77,13 +77,44 @@ public class O {
         // consideration the "T" option that selects the displayed and sorted
         // time attribute.
         else if (arguments.contains("d") || arguments.contains("-d")) {
-            Arrays.sort(toSort, (p1, p2) -> {
+            Arrays.sort(toSort,  (path1, path2) -> {
 
                 if (options.has("t")) {
-                    if (options.valueOf("t") == "c")
-                        return Long.compare(p1.toFile().lastModified(), p1.toFile().lastModified());
+                    try {
+                        DosFileAttributes attr1 = Files.readAttributes(path1, DosFileAttributes.class);
+                        DosFileAttributes attr2 = Files.readAttributes(path2, DosFileAttributes.class);
+
+                        if (options.valueOf("t") == "c") {
+                            if (arguments.contains("-d"))
+                                return (attr2.creationTime().compareTo(attr1.creationTime()));
+                            else
+                                return (attr1.creationTime().compareTo(attr2.creationTime()));
+                        }
+                        else if (options.valueOf("t") == "a") {
+                            if (arguments.contains("-d"))
+                                return (attr2.lastAccessTime().compareTo(attr1.lastAccessTime()));
+                            else
+                                return (attr1.lastAccessTime().compareTo(attr2.lastAccessTime()));
+                        }
+                        else {
+                            if (arguments.contains("-d"))
+                                return (attr2.lastAccessTime().compareTo(attr1.lastModifiedTime()));
+                            else
+                                return (attr1.lastAccessTime().compareTo(attr2.lastModifiedTime()));
+                        }
+
+                    } catch (IOException x) {
+                        System.err.println(x);
+                    }
                 }
-                return Long.compare(p1.toFile().lastModified(), p1.toFile().lastModified());
+
+                else {
+                    if (arguments.contains("-d"))
+                        return Long.compare(path2.toFile().lastModified(), path1.toFile().lastModified());
+                    else
+                        return Long.compare(path1.toFile().lastModified(), path2.toFile().lastModified());
+                }
+                return 0;
 
             });
         }
@@ -93,37 +124,13 @@ public class O {
         if (arguments.contains("g") || arguments.contains("-g")) {
             Arrays.sort(toSort, (path1, path2) -> {
 
-                // Reverse the sorting if hyphenated argument was passed.
-                if (options.valueOf("o")=="-e") {
-                    Path tmp = path1;
-                    path1 = path2;
-                    path2 = tmp;
-                }
-
-                // Convert the paths to strings for comparator.
-                String string1 = path1.toString();
-                String string2 = path2.toString();
-
-                // We first need to make sure that either both files or neither file
-                // has an extension (otherwise we'll end up comparing the extension of one
-                // to the start of the other, or else throwing an exception).
-                final int s1Dot = string1.lastIndexOf('.');
-                final int s2Dot = string2.lastIndexOf('.');
-                if ((s1Dot == -1) == (s2Dot == -1)) { // both or neither
-                    string1 = string1.substring(s1Dot + 1);
-                    string2 = string2.substring(s2Dot + 1);
-                    return string1.compareTo(string2);
-                } else if (s1Dot == -1) { // only string2 has an extension, so string1 goes first
-                    return -1;
-                } else { // only s1 has an extension, so s1 goes second
-                    return 1;
-                }
+                if (arguments.contains("g"))
+                    return Boolean.compare(Files.isDirectory(path2), Files.isDirectory(path1));
+                else
+                    return Boolean.compare(Files.isDirectory(path1), Files.isDirectory(path2));
             });
         }
 
-        for (int i = 0; i < toSort.length; i++) {
-            System.out.println(toSort[i].toString());
-        }
         return toSort;
     }
 }

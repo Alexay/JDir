@@ -12,13 +12,8 @@ import java.text.DateFormat;
  * USED BY: StandardDisplay.java
  */
 
-
 public class T {
     public static String parseTime(DosFileAttributes attr, OptionSet options) {
-
-
-        // If the user provided no "t" option, or provided no argument to the "t" option
-        // or has provided the "w" argument, we return the default timestamp - last modified.
         if (!options.has("t") || (options.has("t") && !options.hasArgument("t"))) {
             FileTime lastModifiedFileTime = attr.lastModifiedTime();
             DateFormat df1 = options.has("4")?DateFormat.getDateInstance(DateFormat.MEDIUM):DateFormat.getDateInstance(DateFormat.SHORT);
@@ -37,12 +32,22 @@ public class T {
         }
 
         // If the user provided the "a" argument, we return the last access time.
-        else{  // (options.valueOf("t") == "a")
+        else if (options.valueOf("t") == "a") {
             FileTime lastAccessFileTime = attr.lastAccessTime();
-            DateFormat df1 = options.has("4")?DateFormat.getDateInstance(DateFormat.MEDIUM):DateFormat.getDateInstance(DateFormat.SHORT);
+            DateFormat df1 = options.has("4") ? DateFormat.getDateInstance(DateFormat.MEDIUM) : DateFormat.getDateInstance(DateFormat.SHORT);
             DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
             String lastAccessed = df1.format(lastAccessFileTime.toMillis()) + " " + df2.format(lastAccessFileTime.toMillis());
             return lastAccessed;
+        }
+
+        // If the user provided no "t" option, or provided no argument to the "t" option
+        // or has provided the "w" argument, we return the default timestamp - last modified.
+        else {
+            FileTime lastModifiedFileTime = attr.lastModifiedTime();
+            DateFormat df1 = options.has("4")?DateFormat.getDateInstance(DateFormat.MEDIUM):DateFormat.getDateInstance(DateFormat.SHORT);
+            DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
+            String lastModified = df1.format(lastModifiedFileTime.toMillis()) + " " + df2.format(lastModifiedFileTime.toMillis());
+            return lastModified;
         }
     }
 }
