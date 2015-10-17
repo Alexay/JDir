@@ -1,4 +1,4 @@
-package szu.alex;
+package com.alex;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

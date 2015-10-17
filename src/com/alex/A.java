@@ -1,4 +1,4 @@
-package szu.alex;
+package com.alex;
 
 import joptsimple.OptionSet;
 

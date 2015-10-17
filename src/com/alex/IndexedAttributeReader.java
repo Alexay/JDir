@@ -1,4 +1,4 @@
-package szu.alex;
+package com.alex;
 
 import java.lang.reflect.Method;
 import java.nio.file.attribute.DosFileAttributes;

@@ -1,4 +1,4 @@
-package szu.alex;
+package com.alex;
 
 /**
  * Use this class to parse NTFS's Alternate Data Stream in Windows directories
