@@ -17,6 +17,17 @@ public class StandardDisplay {
 
         int dirCounter = 0;
 
+        // If the user specified the "r" option, and didn't filter for certain
+        // files, then we first display the ADS data.
+        if (options.has("r") &&
+                !(options.valuesOf("a").contains("h") ||
+                options.valuesOf("a").contains("s") ||
+                options.valuesOf("a").contains("-a") ||
+                options.valuesOf("a").contains("r") ||
+                options.valuesOf("a").contains("l"))
+                )
+            ADSReader.display(filesForDisplay[0].getParent());
+
         try {
             for (Path aPath : filesForDisplay) {
                 // First, we'll initialize the different variables that may occur in the filtering
@@ -37,7 +48,12 @@ public class StandardDisplay {
                 boolean isJunction = ReparsePointAttributeReader.read(attr);
 
                 // We initialize the fileName for the conditional steps.
-                String fileName = aPath.getFileName().toString();
+                String fileName;
+                if (isJunction)
+                    fileName  = (aPath.getFileName().toString() + " " + "[" + aPath.toRealPath() + "]");
+                else
+                    fileName  = aPath.getFileName().toString();
+
 
                 // If the user used the "l" option, we convert the file name to lowercase characters.
                 if (options.has("l"))

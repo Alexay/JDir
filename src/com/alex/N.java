@@ -57,9 +57,6 @@ public class N {
                 if (isDir)
                     dirCounter++;
 
-                // Is it reparse point / junction?
-                boolean isJunction = ReparsePointAttributeReader.read(attr);
-
 
                 // In this statement we take the full normal path, convert it to a string, pass it to be converted
                 // into the 8-dot-3 format, get it returned in string format, convert that string into a Path,
@@ -88,8 +85,7 @@ public class N {
                 System.out.println(
                         fileName +
                                 (isDir ?
-                                        (isJunction ?
-                                                "<JUNCTION>" : "<DIR>     ") : "          ") +
+                                        "<DIR>     " : "          ") +
                                 fileSize + " " +
                                 timeStamp
                 );

@@ -16,11 +16,11 @@ public class Test {
         for (int iter = 0; iter < args.length; iter++)
             args[iter] = args[iter].toLowerCase();
 
-        OptionParser parser = new OptionParser("a::o::bwdnc4t:l?*");
+        OptionParser parser = new OptionParser("a::o::bwdrnc4t:l?*");
 
         parser.allowsUnrecognizedOptions();
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
-        parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
+        parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',').defaultsTo("g");
         parser.accepts("t", "Time").withOptionalArg().defaultsTo("w");
         parser.accepts("b", "Bare output without metadata");
         parser.accepts("c", "Enables thousand separators in the file size output");
@@ -53,6 +53,8 @@ public class Test {
             if (options.nonOptionArguments().isEmpty()) {
                 ArrayList<Path> toArray = A.filter(localDir, options);
 
+
+
                 // Let's convert our ArrayList to a normal array to save some memory.
                 Path[] toSortAndDisplay = new Path[toArray.size()];
                 toArray.toArray(toSortAndDisplay);
@@ -73,7 +75,7 @@ public class Test {
             // This is the case if the user actually provides a path.
             else {
 
-                // For each given path we will filter.
+                // For each given path we will perform the needed operations.
                 for (int i = 0; i < dirPathArray.size(); i++) {
                     Path pathToFilter = dirPathArray.get(i);
                     ArrayList<Path> toArray = A.filter(pathToFilter, options);

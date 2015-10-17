@@ -79,17 +79,18 @@ public class O {
         else if (arguments.contains("d") || arguments.contains("-d")) {
             Arrays.sort(toSort,  (Path path1, Path path2) -> {
                 try {
+                    DosFileAttributes attr1 = Files.readAttributes(path1, DosFileAttributes.class);
+                    DosFileAttributes attr2 = Files.readAttributes(path2, DosFileAttributes.class);
                     if (options.has("t")) {
-                        DosFileAttributes attr1 = Files.readAttributes(path1, DosFileAttributes.class);
-                        DosFileAttributes attr2 = Files.readAttributes(path2, DosFileAttributes.class);
+
                         String timeArgument = options.valueOf("t").toString();
 
                         switch (timeArgument) {
-                            case "c":
+                            case "w":
                                 if (arguments.contains("-d"))
-                                    return (attr2.creationTime().compareTo(attr1.creationTime()));
+                                    return (attr2.lastModifiedTime().compareTo(attr1.lastModifiedTime()));
                                 else
-                                    return (attr1.creationTime().compareTo(attr2.creationTime()));
+                                    return (attr1.lastModifiedTime().compareTo(attr2.lastModifiedTime()));
                             case "a":
                                 if (arguments.contains("-d"))
                                     return (attr2.lastAccessTime().compareTo(attr1.lastAccessTime()));
@@ -97,16 +98,16 @@ public class O {
                                     return (attr1.lastAccessTime().compareTo(attr2.lastAccessTime()));
                             default:
                                 if (arguments.contains("-d"))
-                                    return (attr2.lastModifiedTime().compareTo(attr1.lastModifiedTime()));
+                                    return  (attr2.creationTime().compareTo(attr1.creationTime()));
                                 else
-                                    return (attr1.lastModifiedTime().compareTo(attr2.lastModifiedTime()));
+                                    return (attr1.creationTime().compareTo(attr2.creationTime()));
                         }
                     }
                     else {
                         if (arguments.contains("-d"))
-                            return Long.compare(path2.toFile().lastModified(), path1.toFile().lastModified());
+                            return attr2.lastModifiedTime().compareTo(attr1.lastModifiedTime()); // Long.compare(path2.toFile().lastModified(), path1.toFile().lastModified());
                         else
-                            return Long.compare(path1.toFile().lastModified(), path2.toFile().lastModified());
+                            return attr1.lastModifiedTime().compareTo(attr2.lastModifiedTime());  //Long.compare(path1.toFile().lastModified(), path2.toFile().lastModified());
                     }
                 } catch (IOException x) {
                     System.err.println("O sorting function -d argument " + x);
