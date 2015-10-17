@@ -2,11 +2,11 @@ package szu.alex;
 
 import joptsimple.OptionSet;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 
 /**
@@ -15,16 +15,16 @@ import java.nio.file.attribute.DosFileAttributes;
  * USED BY: Main.java
  */
 
-
 public class N {
+
     public static String getMSDOSName(String fileName)
             throws IOException, InterruptedException {
 
-        String path = getAbsolutePath(fileName);
+        String path = fileName;
 
         Process process =
                 Runtime.getRuntime().exec(
-                        "cmd /c for %I in (\"" + path + "\") do @echo %~snI");
+                        "cmd /c for %I in (\"" + path + "\") do @echo %~fsI");
 
         process.waitFor();
 
@@ -35,22 +35,6 @@ public class N {
             return null;
 
         return new String(data, 0, size).replaceAll("\\r\\n", "");
-    }
-
-    public static String getAbsolutePath(String fileName)
-            throws IOException {
-        File file = new File(fileName);
-        String path = file.getAbsolutePath();
-
-        if (file.exists() == false)
-            file = new File(path);
-
-        path = file.getCanonicalPath();
-
-        if (file.isDirectory() && (path.endsWith(File.separator) == false))
-            path += File.separator;
-
-        return path;
     }
 
 
@@ -77,32 +61,46 @@ public class N {
                 boolean isJunction = ReparsePointAttributeReader.read(attr);
 
 
-                // We initialize the fileName for the conditional steps.
-                String fileName = getMSDOSName(aPath.getFileName().toString());
+                // In this statement we take the full normal path, convert it to a string, pass it to be converted
+                // into the 8-dot-3 format, get it returned in string format, convert that string into a Path,
+                // isolate the filename of the Path, convert it to a string and finally format that string.
+                String fileName = Paths.get(getMSDOSName(aPath.toString())).getFileName().toString();
+                fileName = String.format("%1$-" + 13 + "s", fileName);
 
                 // If the user used the "l" option, we convert the file name to lowercase characters.
                 if (options.has("l"))
                     fileName = fileName.toLowerCase();
 
+
+                // This block deals with initializing the file size and putting it into the proper format.
+                String fileSize;
+
+                // If the user used the "c" option, we add separators between each thousand.
+                if (options.has("c"))
+                    fileSize = C.thousandSeparate(attr.size());
+                else
+                    fileSize = Long.toString(attr.size());
+
+                fileSize =  String.format("%1$" + 15 + "s" , fileSize);
+
+
                 // OK, we've initialized everything we need, let's print!
                 System.out.println(
-                        fileName + "    " +
+                        fileName +
                                 (isDir ?
                                         (isJunction ?
-                                                "<JUNCTION>  " : "<DIR>       ") : "          ") +
-                                (options.has("c") ?
-                                        C.thousandSeparate(attr.size()):attr.size()) + " " +
+                                                "<JUNCTION>" : "<DIR>     ") : "          ") +
+                                fileSize + " " +
                                 timeStamp
                 );
             }
         } catch (IOException b) {
             b.printStackTrace();
-        } catch (InterruptedException c) {}
+        } catch (InterruptedException ignored) {}
 
         // Here we initializer the directory
         int nonDirCounter = filesForDisplay.length-dirCounter;
         System.out.println(dirCounter);
         System.out.println(nonDirCounter);
-
     }
 }

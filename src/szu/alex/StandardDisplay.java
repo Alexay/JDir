@@ -24,6 +24,7 @@ public class StandardDisplay {
 
                 // Let's get our timestamp depending on the option given by the user.
                 String timeStamp = T.parseTime(attr, options);
+                timeStamp = String.format("%1$-" + 21 + "s" , timeStamp);
 
                 // Is it a directory?
                 boolean isDir = attr.isDirectory();
@@ -42,14 +43,24 @@ public class StandardDisplay {
                 if (options.has("l"))
                     fileName = fileName.toLowerCase();
 
+                // This block deals with initializing the file size and putting it into the proper format.
+                String fileSize;
+
+                // If the user used the "c" option, we add separators between each thousand.
+                if (options.has("c"))
+                    fileSize = C.thousandSeparate(attr.size());
+                else
+                    fileSize = Long.toString(attr.size());
+
+                fileSize =  String.format("%1$" + 15 + "s" , fileSize);
+
                 // OK, we've initialized everything we need, let's print!
                 System.out.println(
-                        timeStamp + "    " +
+                        timeStamp +
                                 (isDir ?
                                         (isJunction ?
-                                                "<JUNCTION>  " : "<DIR>       ") : "          ") +
-                                (options.has("c") ?
-                                        C.thousandSeparate(attr.size()):attr.size()) + " " +
+                                                "<JUNCTION>" : "<DIR>     ") : "          ") +
+                                fileSize + " " +
                                 fileName
                 );
             }

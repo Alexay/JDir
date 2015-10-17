@@ -23,6 +23,7 @@ public class Test {
         parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("t", "Time").withOptionalArg().defaultsTo("w");
         parser.accepts("b", "Bare output without metadata");
+        parser.accepts("c", "Enables thousand separators in the file size output");
         parser.accepts("?", "Displays this help prompt");
 
         OptionSet options = parser.parse(args);
