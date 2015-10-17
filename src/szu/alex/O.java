@@ -82,24 +82,28 @@ public class O {
                     if (options.has("t")) {
                         DosFileAttributes attr1 = Files.readAttributes(path1, DosFileAttributes.class);
                         DosFileAttributes attr2 = Files.readAttributes(path2, DosFileAttributes.class);
+                        String timeArgument = options.valueOf("t").toString();
 
-                        if (options.valueOf("t") == "c") {
+                        if (timeArgument.equals("c")) {
                             if (arguments.contains("-d"))
                                 return (attr2.creationTime().compareTo(attr1.creationTime()));
                             else
                                 return (attr1.creationTime().compareTo(attr2.creationTime()));
-                        } else if (options.valueOf("t") == "a") {
+                        }
+                        else if (timeArgument.equals("a")) {
                             if (arguments.contains("-d"))
                                 return (attr2.lastAccessTime().compareTo(attr1.lastAccessTime()));
                             else
                                 return (attr1.lastAccessTime().compareTo(attr2.lastAccessTime()));
-                        } else {
-                            if (arguments.contains("-d"))
-                                return (attr2.lastAccessTime().compareTo(attr1.lastModifiedTime()));
-                            else
-                                return (attr1.lastAccessTime().compareTo(attr2.lastModifiedTime()));
                         }
-                    } else {
+                        else {
+                            if (arguments.contains("-d"))
+                                return (attr2.lastModifiedTime().compareTo(attr1.lastModifiedTime()));
+                            else
+                                return (attr1.lastModifiedTime().compareTo(attr2.lastModifiedTime()));
+                        }
+                    }
+                    else {
                         if (arguments.contains("-d"))
                             return Long.compare(path2.toFile().lastModified(), path1.toFile().lastModified());
                         else
