@@ -1,7 +1,6 @@
 package com.alex;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  *   An output mode that allows for any of the display modes to be printed page-by-page using the Windows "more"

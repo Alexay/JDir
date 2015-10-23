@@ -23,6 +23,7 @@ public class Main {
         parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("t", "Time").withOptionalArg().defaultsTo("w");
         parser.accepts("b", "Bare output without metadata");
+        parser.accepts("w", "Displays files in neat columns");
         parser.accepts("c", "Enables thousand separators in the file size output");
         parser.accepts("?", "Displays this help prompt");
 
@@ -69,6 +70,10 @@ public class Main {
                     if (options.has("b"))
                         B.display(O.sort(toSortAndDisplay, options), options);
 
+                        // Columns display option.
+                    else if (options.has("w"))
+                        W.display(O.sort(toSortAndDisplay, options), options);
+
                         // The old-school win95/MS-DOS display option.
                     else if (options.has("n"))
                         N.display(O.sort(toSortAndDisplay, options), options);
@@ -99,6 +104,10 @@ public class Main {
                             // The old-school win95/MS-DOS display option.
                         else if (options.has("n"))
                             N.display(O.sort(toSortAndDisplay, options), options);
+
+                        // Columns display option.
+                        else if (options.has("w"))
+                            W.display(O.sort(toSortAndDisplay, options), options);
 
                             // If no other display options are specified, we default to the standard display.
                         else
