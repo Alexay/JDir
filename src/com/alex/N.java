@@ -37,10 +37,24 @@ public class N {
         return new String(data, 0, size).replaceAll("\\r\\n", "");
     }
 
-
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
+        // We begin by initializing some counters for the footer stats.
+        long freeDiskSpaceCounter = filesForDisplay[0].toFile().getUsableSpace();
         int dirCounter = 0;
+        long sizeCounter = 0;
+
+        // This block takes care of the header. The header reader method for some reason
+        // displays the improper path if the given path is actually a directory,
+        // so to circumvent that we only pass the path that is a file.
+        Path pathToReadForHeader = filesForDisplay[0];
+        for (Path aPath : filesForDisplay)
+            if(!aPath.toFile().isDirectory()) {
+                pathToReadForHeader = aPath;
+                break;
+            }
+        // OK, let's print the header.
+        HeaderDataReader.read(pathToReadForHeader);
 
         try {
             for (Path aPath : filesForDisplay) {
@@ -96,7 +110,27 @@ public class N {
 
         // Here we initializer the directory
         int nonDirCounter = filesForDisplay.length-dirCounter;
-        System.out.println(dirCounter);
-        System.out.println(nonDirCounter);
+        // Here we format the dir and non-dir counters into padded string for display
+        String nonDirs = String.format("%1$" + 15 + "s", nonDirCounter);
+        String dirs = String.format("%1$" + 15 + "s", dirCounter);
+
+        // In this block we prepare the total size of all the non-dir files in the path as strings for display
+        // as well as the free disk space.
+        String totalSize;
+        String freeDiskSpace;
+        if (options.has("c")) {
+            totalSize = C.thousandSeparate(sizeCounter);
+            freeDiskSpace = C.thousandSeparate(freeDiskSpaceCounter);
+        }
+        else {
+            totalSize = Long.toString(sizeCounter);
+            freeDiskSpace = Long.toString(freeDiskSpaceCounter);
+        }
+        totalSize = String.format("%1$" + 14 + "s", totalSize);
+        freeDiskSpace = String.format("%1$" + 15 + "s", freeDiskSpace);
+
+        // Printing the footer
+        System.out.println(nonDirs + " File(s) " + totalSize + " bytes");
+        System.out.println(dirs  + " Dir(s) " + freeDiskSpace + " bytes free");
     }
 }

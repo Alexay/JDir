@@ -53,17 +53,13 @@ public class ADSReader {
                     }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
         // Finally, we output our ADS data with appropriate formatting to look good with the other data.
         for (int z = 0; z<parsedADS.size(); z++)
             System.out.println(String.format("%1$" + 46 + "s", parsedADSSizeData.get(z)) + " " + parsedADS.get(z));
-
-       // return parsedADS;
 
     }
 }

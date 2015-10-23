@@ -15,8 +15,6 @@ import java.nio.file.Path;
 public class W {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
-        System.out.println(System.getenv("COLUMNS"));
-
         for (Path aPath : filesForDisplay) {
             System.out.println((options.has("l") ? aPath.getFileName().toString().toLowerCase() : aPath.getFileName()));
         }
