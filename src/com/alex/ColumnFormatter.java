@@ -46,7 +46,7 @@ public class ColumnFormatter {
         String result = "";
         for(List<String> line : lines) {
             for(int i = 0; i < numColumns; i++) {
-                result += pad( line.get(i), maxLengths.get(i) + 1 );
+                result += pad( line.get(i), maxLengths.get(i) + 1);
             }
             result += System.lineSeparator();
         }
