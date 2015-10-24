@@ -1,14 +1,4 @@
-package com.alex;
-
-/**
- * This is the wide output mode, designed to output bare-like filenames in a Unix-like fashion of multiple columns.
- *
- * Same as W, but outputs vertically instead of horizontally.
- *
- *
- * USED BY: Main.java
- */
-
+package jdir;
 
 import joptsimple.OptionSet;
 
@@ -18,9 +8,13 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributes;
 
+/**
+ * This class serves as one of three display modes
+ *
+ * USED BY: Main.java
+ */
 
-
-public class D {
+public class StandardDisplay {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
         // We begin by initializing some counters for the footer stats.
@@ -39,13 +33,26 @@ public class D {
             }
         // OK, let's print the header.
         HeaderDataReader.read(pathToReadForHeader);
-        String[] outputStringArray = new String[filesForDisplay.length];
-        ColumnFormatter output = new ColumnFormatter();
+
+        // If the user specified the "r" option, and didn't filter for certain
+        // files, then we first display the ADS data.
+        if (options.has("r") &&
+                !(options.valuesOf("a").contains("h") ||
+                options.valuesOf("a").contains("s") ||
+                options.valuesOf("a").contains("-a") ||
+                options.valuesOf("a").contains("r") ||
+                options.valuesOf("a").contains("l"))
+                )
+            ADSReader.display(filesForDisplay[0].getParent());
 
         try {
-            for (int i = 0; i < filesForDisplay.length; i++) {
+            for (Path aPath : filesForDisplay) {
                 // First, we'll initialize the different variables that may occur in the filtering.
-                DosFileAttributes attr = Files.readAttributes(filesForDisplay[i], DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+               DosFileAttributes attr = Files.readAttributes(aPath, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+
+                // Let's get our timestamp depending on the option given by the user.
+                String timeStamp = T.parseTime(attr, options);
+                timeStamp = String.format("%1$-" + 21 + "s" , timeStamp);
 
                 // Is it a directory?
                 boolean isDir = attr.isDirectory();
@@ -56,37 +63,45 @@ public class D {
                 else
                     sizeCounter += attr.size();
 
+                // Is it reparse point / junction?
+                boolean isJunction = ReparsePointAttributeReader.read(attr);
+
                 // We initialize the fileName for the conditional steps.
                 String fileName;
-                if (isDir)
-                    fileName  = ("[" + filesForDisplay[i].getFileName().toString() + "]");
+                if (isJunction)
+                    fileName  = (aPath.getFileName().toString() + " " + "[" + aPath.toRealPath() + "]");
                 else
-                    fileName  = filesForDisplay[i].getFileName().toString();
+                    fileName  = aPath.getFileName().toString();
+
 
                 // If the user used the "l" option, we convert the file name to lowercase characters.
                 if (options.has("l"))
                     fileName = fileName.toLowerCase();
-                //fileName = String.format("%1$" + 10 + "s", fileName);
-                outputStringArray[i] = fileName;
+
+                // This block deals with initializing the file size and putting it into the proper format.
+                String fileSize;
+
+                // If the user used the "c" option, we add separators between each thousand.
+                if (options.has("c"))
+                    fileSize = C.thousandSeparate(attr.size());
+                else
+                    fileSize = Long.toString(attr.size());
+
+                fileSize =  String.format("%1$" + 15 + "s" , fileSize);
+
+                // OK, we've initialized everything we need, let's print!
+                System.out.println(
+                        timeStamp +
+                                (isDir ?
+                                        (isJunction ?
+                                                "<JUNCTION>" : "<DIR>     ") : "          ") +
+                                fileSize + " " +
+                                fileName
+                );
             }
         } catch (IOException b) {
-            System.err.println("W.java: "+b);
+            System.err.println("StandardDisplay.java: "+b);
         }
-
-        // Since our column formatter takes input in line-by-line, we need to transpose our lines into columns,
-        // the way we do that is by first calculating the number of needed rows from the total number
-        // of array elements, then dividing that by out constant number of columns, which is 3.
-        // If the division isn't even, we add one to compensate for the remainder.
-        int numberOfRows = outputStringArray.length%3==0?outputStringArray.length/3:outputStringArray.length/3+1;
-
-        // This block prints out the columns and takes into account whether an array element exists.
-        for (int i = 0; i<numberOfRows; i++)
-            output.addLine(
-                    outputStringArray[i],
-                    i+numberOfRows >= outputStringArray.length?"":outputStringArray[i+numberOfRows],
-                    i+numberOfRows*2 >= outputStringArray.length?"":outputStringArray[i+numberOfRows*2]
-            );
-        output.print();
 
         // After we outputted all the files, we output the footer.
         // Here we calculate the number of non-directory files.

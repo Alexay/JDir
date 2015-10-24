@@ -1,4 +1,14 @@
-package com.alex;
+package jdir;
+
+/**
+ * This is the wide output mode, designed to output bare-like filenames in a Unix-like fashion of multiple columns.
+ *
+ * Same as W, but outputs vertically instead of horizontally.
+ *
+ *
+ * USED BY: Main.java
+ */
+
 
 import joptsimple.OptionSet;
 
@@ -8,15 +18,9 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributes;
 
-/**
- * This is the wide output mode, designed to output bare-like filenames in a Unix-like fashion of multiple columns.
- *
- *
- * USED BY: Main.java
- */
 
 
-public class W {
+public class D {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
         // We begin by initializing some counters for the footer stats.
@@ -69,13 +73,18 @@ public class W {
             System.err.println("W.java: "+b);
         }
 
+        // Since our column formatter takes input in line-by-line, we need to transpose our lines into columns,
+        // the way we do that is by first calculating the number of needed rows from the total number
+        // of array elements, then dividing that by out constant number of columns, which is 3.
+        // If the division isn't even, we add one to compensate for the remainder.
+        int numberOfRows = outputStringArray.length%3==0?outputStringArray.length/3:outputStringArray.length/3+1;
+
         // This block prints out the columns and takes into account whether an array element exists.
-        for (int i = 0; i<outputStringArray.length; i+=3)
+        for (int i = 0; i<numberOfRows; i++)
             output.addLine(
                     outputStringArray[i],
-                    i + 1 >= outputStringArray.length ? "" : outputStringArray[i + 1],
-                    i + 2 >= outputStringArray.length ? "" : outputStringArray[i + 2]
-                    //i + 3 >= outputStringArray.length ? "" : outputStringArray[i + 3]
+                    i+numberOfRows >= outputStringArray.length?"":outputStringArray[i+numberOfRows],
+                    i+numberOfRows*2 >= outputStringArray.length?"":outputStringArray[i+numberOfRows*2]
             );
         output.print();
 

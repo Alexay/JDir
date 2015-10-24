@@ -1,4 +1,4 @@
-package com.alex;
+package jdir;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ public class P {
         }
 
         Process process =
-                Runtime.getRuntime().exec("cmd /c java com.alex.Main " + out + " | more /E");
+                Runtime.getRuntime().exec("cmd /c java Main " + out + " | more /E");
         process.waitFor();
         byte[] data = new byte[65536];
         int size = process.getInputStream().read(data);

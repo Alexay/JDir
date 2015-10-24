@@ -1,4 +1,4 @@
-package com.alex;
+package jdir;
 
 /**
  *  Use this class to get a header for the Standard Display output mode.

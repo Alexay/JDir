@@ -1,4 +1,4 @@
-package com.alex;
+package jdir;
 
 /**
  * Used to format W and D's output in a column format

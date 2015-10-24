@@ -1,4 +1,4 @@
-package com.alex;
+package jdir;
 
 import joptsimple.OptionSet;
 

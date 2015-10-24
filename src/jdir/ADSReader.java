@@ -1,4 +1,4 @@
-package com.alex;
+package jdir;
 
 /**
  * Use this class to parse NTFS's Alternate Data Stream in Windows directories

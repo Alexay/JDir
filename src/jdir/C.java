@@ -1,4 +1,4 @@
-package com.alex;
+package jdir;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
