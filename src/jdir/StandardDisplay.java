@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 
 /**
@@ -18,21 +19,23 @@ public class StandardDisplay {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
         // We begin by initializing some counters for the footer stats.
-        long freeDiskSpaceCounter = filesForDisplay[0].toFile().getUsableSpace();
         int dirCounter = 0;
         long sizeCounter = 0;
 
         // This block takes care of the header. The header reader method for some reason
         // displays the improper path if the given path is actually a directory,
         // so to circumvent that we only pass the path that is a file.
-        Path pathToReadForHeader = filesForDisplay[0];
+        Path pathToReadForHeader = Paths.get("");
         for (Path aPath : filesForDisplay)
             if(!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;
                 break;
             }
+        long freeDiskSpaceCounter = pathToReadForHeader.toFile().getUsableSpace();
+
         // OK, let's print the header.
-        HeaderDataReader.read(pathToReadForHeader);
+        //HeaderDataReader.read(pathToReadForHeader);
+
 
         // If the user specified the "r" option, and didn't filter for certain
         // files, then we first display the ADS data.
@@ -73,10 +76,15 @@ public class StandardDisplay {
                 else
                     fileName  = aPath.getFileName().toString();
 
+                // This block deals with initializing the 8-dot-3 filename in case the user specifies the "X" option.
+                String DOSfileName = Paths.get(N.getMSDOSName(aPath.toString())).getFileName().toString();
+                DOSfileName = String.format("%1$-" + 13 + "s", DOSfileName);
 
                 // If the user used the "l" option, we convert the file name to lowercase characters.
-                if (options.has("l"))
+                if (options.has("l")) {
+                    DOSfileName = DOSfileName.toLowerCase();
                     fileName = fileName.toLowerCase();
+                }
 
                 // This block deals with initializing the file size and putting it into the proper format.
                 String fileSize;
@@ -96,10 +104,11 @@ public class StandardDisplay {
                                         (isJunction ?
                                                 "<JUNCTION>" : "<DIR>     ") : "          ") +
                                 fileSize + " " +
+                                (options.has("x")?DOSfileName:"") +
                                 fileName
                 );
             }
-        } catch (IOException b) {
+        } catch (IOException | InterruptedException b) {
             System.err.println("StandardDisplay.java: "+b);
         }
 

@@ -40,21 +40,20 @@ public class N {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
         // We begin by initializing some counters for the footer stats.
-        long freeDiskSpaceCounter = filesForDisplay[0].toFile().getUsableSpace();
         int dirCounter = 0;
         long sizeCounter = 0;
 
         // This block takes care of the header. The header reader method for some reason
         // displays the improper path if the given path is actually a directory,
         // so to circumvent that we only pass the path that is a file.
-        Path pathToReadForHeader = filesForDisplay[0];
+        Path pathToReadForHeader = Paths.get("");
         for (Path aPath : filesForDisplay)
             if(!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;
                 break;
             }
-        // OK, let's print the header.
-        HeaderDataReader.read(pathToReadForHeader);
+        long freeDiskSpaceCounter = pathToReadForHeader.toFile().getUsableSpace();
+
 
         try {
             for (Path aPath : filesForDisplay) {

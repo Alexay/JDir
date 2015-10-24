@@ -3,7 +3,10 @@ package jdir;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
@@ -16,9 +19,8 @@ public class Main {
         for (int iter = 0; iter < args.length; iter++)
             args[iter] = args[iter].toLowerCase();
 
-        OptionParser parser = new OptionParser("a::o::bwdrpnc4t:l?*");
+        OptionParser parser = new OptionParser("a::o::bwdrpxnc4t:l?*");
 
-        parser.allowsUnrecognizedOptions();
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("t", "Time").withOptionalArg().defaultsTo("w");
@@ -26,6 +28,7 @@ public class Main {
         parser.accepts("w", "Displays files in neat columns");
         parser.accepts("c", "Enables thousand separators in the file size output");
         parser.accepts("?", "Displays this help prompt");
+        parser.nonOptions("files to be processed");
 
         OptionSet options = parser.parse(args);
 
@@ -40,10 +43,16 @@ public class Main {
             // create an array out of the parsed directory strings.
             // Then, we create an array of paths by converting each individual string into a path,
             // but the user may enter the path incorrectly, and we must account for that exception.
+            // We also create a separate array to hold wildcard paths.
             ArrayList<Path> dirPathArray = new ArrayList<>();
             for (int i = 0; i < options.nonOptionArguments().size(); i++) {
                 try {
-                    dirPathArray.add(Paths.get(options.nonOptionArguments().get(i).toString()));
+                    if (Files.exists(Paths.get(options.nonOptionArguments().get(i).toString())))
+                        if (Files.isDirectory(Paths.get(options.nonOptionArguments().get(i).toString())))
+                            dirPathArray.add(Paths.get(options.nonOptionArguments().get(i).toString()));
+                        else {}
+                    else
+                        System.out.println("File \"" + options.nonOptionArguments().get(i).toString() + "\" not found.\n");
                 } catch (InvalidPathException x) {
                     System.out.println(options.nonOptionArguments().get(i).toString() + " is an invalid path. Ignoring...");
                 }
@@ -53,6 +62,7 @@ public class Main {
             if (options.has("?")) {
                 parser.printHelpOn(System.out);
             }
+
 
             // Now that we've handled the "help" option, let's get down to business!
             else {
@@ -85,11 +95,16 @@ public class Main {
                         // If no other display options are specified, we default to the standard display.
                     else
                         StandardDisplay.display(O.sort(toSortAndDisplay, options), options);
-                    
+
                 }
 
                 // This is the case if the user actually provides a path.
                 else {
+
+                    // In case the user did pass paths but none of them turned out to be valid, we print that
+                    // information to the user.
+                    if (dirPathArray.isEmpty())
+                        System.out.println("Non of the given paths are valid for displaying. The program will now exit.");
 
                     // For each given path we will perform the needed operations.
                     for (int i = 0; i < dirPathArray.size(); i++) {
@@ -106,20 +121,28 @@ public class Main {
                             B.display(O.sort(toSortAndDisplay, options), options);
 
                             // The old-school win95/MS-DOS display option.
-                        else if (options.has("n"))
+                        else if (options.has("n")) {
+                            HeaderDataReader.read(pathToFilter);
                             N.display(O.sort(toSortAndDisplay, options), options);
-
-                        // Columns display option.
-                        else if (options.has("w"))
-                            W.display(O.sort(toSortAndDisplay, options), options);
+                        }
 
                             // Columns display option.
-                        else if (options.has("d"))
+                        else if (options.has("w")) {
+                            HeaderDataReader.read(pathToFilter);
+                            W.display(O.sort(toSortAndDisplay, options), options);
+                        }
+
+                            // Columns display option.
+                        else if (options.has("d")) {
+                            HeaderDataReader.read(pathToFilter);
                             D.display(O.sort(toSortAndDisplay, options), options);
+                        }
 
                             // If no other display options are specified, we default to the standard display.
-                        else
+                        else {
+                            HeaderDataReader.read(pathToFilter);
                             StandardDisplay.display(O.sort(toSortAndDisplay, options), options);
+                        }
                     }
                 }
             }

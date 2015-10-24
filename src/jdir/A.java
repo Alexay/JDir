@@ -18,6 +18,8 @@ import java.util.List;
 public class A {
     public static ArrayList<Path> filter(Path dirPath, OptionSet options) {
         ArrayList<Path> filteredFileArray = new ArrayList<>();
+
+
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath)) {
             for (Path file : stream) {
 
@@ -46,7 +48,6 @@ public class A {
                 boolean isIndexed = IndexedAttributeReader.read(attr);
 
 
-
                 // If neither options nor arguments are given, we filter for the default configuration.
                 if (!options.has("a")) {
                     if (!isHidden || !isSystem)
@@ -73,10 +74,8 @@ public class A {
                 else
                     filteredFileArray.add(file);
             }
-        } catch (IOException | DirectoryIteratorException x) {
-            System.err.println(x);
-        } catch (NullPointerException z) {
-            // Just give it a try.
+        } catch (NotDirectoryException | NullPointerException y) {} catch (IOException x) {
+            System.err.println(x + " A.java");
         }
         return filteredFileArray;
     }

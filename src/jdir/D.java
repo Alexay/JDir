@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 
 
@@ -24,23 +25,22 @@ public class D {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
         // We begin by initializing some counters for the footer stats.
-        long freeDiskSpaceCounter = filesForDisplay[0].toFile().getUsableSpace();
         int dirCounter = 0;
         long sizeCounter = 0;
+        String[] outputStringArray = new String[filesForDisplay.length];
+        ColumnFormatter output = new ColumnFormatter();
 
         // This block takes care of the header. The header reader method for some reason
         // displays the improper path if the given path is actually a directory,
         // so to circumvent that we only pass the path that is a file.
-        Path pathToReadForHeader = filesForDisplay[0];
+        Path pathToReadForHeader = Paths.get("");
         for (Path aPath : filesForDisplay)
             if(!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;
                 break;
             }
-        // OK, let's print the header.
-        HeaderDataReader.read(pathToReadForHeader);
-        String[] outputStringArray = new String[filesForDisplay.length];
-        ColumnFormatter output = new ColumnFormatter();
+        long freeDiskSpaceCounter = pathToReadForHeader.toFile().getUsableSpace();
+
 
         try {
             for (int i = 0; i < filesForDisplay.length; i++) {
