@@ -13,7 +13,18 @@ public class B {
 
     public static void display(Path[] filesForDisplay, OptionSet options) {
         for (Path aPath : filesForDisplay) {
-            System.out.println((options.has("l") ? aPath.getFileName().toString().toLowerCase() : aPath.getFileName()));
+
+            String fileName;
+            if (options.has("s"))
+                fileName = aPath.toAbsolutePath().toString();
+            else
+                fileName = aPath.toString();
+
+            if (options.has("l"))
+                fileName = fileName.toLowerCase();
+
+
+            System.out.println(fileName);
         }
     }
 }

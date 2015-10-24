@@ -131,5 +131,7 @@ public class N {
         // Printing the footer
         System.out.println(nonDirs + " File(s) " + totalSize + " bytes");
         System.out.println(dirs  + " Dir(s) " + freeDiskSpace + " bytes free");
+
+        System.out.println();
     }
 }

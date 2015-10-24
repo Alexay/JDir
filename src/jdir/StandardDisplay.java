@@ -48,6 +48,7 @@ public class StandardDisplay {
                 )
             ADSReader.display(filesForDisplay[0].getParent());
 
+
         try {
             for (Path aPath : filesForDisplay) {
                 // First, we'll initialize the different variables that may occur in the filtering.
@@ -138,6 +139,8 @@ public class StandardDisplay {
         // Printing the footer
         System.out.println(nonDirs + " File(s) " + totalSize + " bytes");
         System.out.println(dirs  + " Dir(s) " + freeDiskSpace + " bytes free");
+
+        System.out.println();
 
     }
 }

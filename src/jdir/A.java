@@ -74,7 +74,7 @@ public class A {
                 else
                     filteredFileArray.add(file);
             }
-        } catch (NotDirectoryException | NullPointerException y) {} catch (IOException x) {
+        } catch (NotDirectoryException | NullPointerException ignored) {} catch (IOException x) {
             System.err.println(x + " A.java");
         }
         return filteredFileArray;

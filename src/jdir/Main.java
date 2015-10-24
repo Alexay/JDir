@@ -19,7 +19,7 @@ public class Main {
         for (int iter = 0; iter < args.length; iter++)
             args[iter] = args[iter].toLowerCase();
 
-        OptionParser parser = new OptionParser("a::o::bwdrpxnc4t:l?*");
+        OptionParser parser = new OptionParser("a::o::bwdrspxnc4t:l?*");
 
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
@@ -68,9 +68,9 @@ public class Main {
             else {
 
                 // This is the case if the user doesn't give any paths to the command and just wants to run in the local path
-                if (options.nonOptionArguments().isEmpty()) {
-                    ArrayList<Path> toArray = A.filter(localDir, options);
+                if (options.nonOptionArguments().isEmpty() && !options.has("s")) {
 
+                    ArrayList<Path> toArray = A.filter(localDir, options);
 
                     // Let's convert our ArrayList to a normal array to save some memory.
                     Path[] toSortAndDisplay = new Path[toArray.size()];
@@ -98,50 +98,63 @@ public class Main {
 
                 }
 
-                // This is the case if the user actually provides a path.
+                // This is the case if the user actually provides a path and/or if the recursive option is set.
                 else {
+
+                    if (options.has("s") && options.nonOptionArguments().isEmpty())
+                        dirPathArray.addAll(S.listFiles(localDir));
 
                     // In case the user did pass paths but none of them turned out to be valid, we print that
                     // information to the user.
-                    if (dirPathArray.isEmpty())
-                        System.out.println("Non of the given paths are valid for displaying. The program will now exit.");
+                    else if (dirPathArray.isEmpty())
+                        System.out.println("Non of the given paths are valid for displaying. \n" +
+                                "Due to the limitations of Java and the Windows command shell this application only accepts directories as arguments.\n" +
+                                "The program will now exit.");
+
 
                     // For each given path we will perform the needed operations.
                     for (int i = 0; i < dirPathArray.size(); i++) {
-                        Path pathToFilter = dirPathArray.get(i);
-                        ArrayList<Path> toArray = A.filter(pathToFilter, options);
 
+                        // Special case for recursive processing.
+                        if (options.has("s"))
+                            S.display(dirPathArray.get(i), options);
 
-                        // Let's convert our ArrayList to a normal array to save some memory.
-                        Path[] toSortAndDisplay = new Path[toArray.size()];
-                        toArray.toArray(toSortAndDisplay);
+                        // Normal processing.
+                        else {
+                            Path pathToFilter = dirPathArray.get(i);
+                            ArrayList<Path> toArray = A.filter(pathToFilter, options);
 
-                        // The "Bare" display option, if specified, takes precedence over other display options.
-                        if (options.has("b"))
-                            B.display(O.sort(toSortAndDisplay, options), options);
+                            // Let's convert our ArrayList to a normal array to save some memory.
+                            Path[] toSortAndDisplay = new Path[toArray.size()];
+                            toArray.toArray(toSortAndDisplay);
 
-                            // The old-school win95/MS-DOS display option.
-                        else if (options.has("n")) {
-                            HeaderDataReader.read(pathToFilter);
-                            N.display(O.sort(toSortAndDisplay, options), options);
-                        }
+                            // The "Bare" display option, if specified, takes precedence over other display options.
+                            if (options.has("b"))
+                                B.display(O.sort(toSortAndDisplay, options), options);
+
+                                // The old-school win95/MS-DOS display option.
+                            else if (options.has("n")) {
+                                HeaderDataReader.read(pathToFilter);
+                                N.display(O.sort(toSortAndDisplay, options), options);
+                            }
 
                             // Columns display option.
-                        else if (options.has("w")) {
-                            HeaderDataReader.read(pathToFilter);
-                            W.display(O.sort(toSortAndDisplay, options), options);
-                        }
+                            else if (options.has("w")) {
+                                HeaderDataReader.read(pathToFilter);
+                                W.display(O.sort(toSortAndDisplay, options), options);
+                            }
 
                             // Columns display option.
-                        else if (options.has("d")) {
-                            HeaderDataReader.read(pathToFilter);
-                            D.display(O.sort(toSortAndDisplay, options), options);
-                        }
+                            else if (options.has("d")) {
+                                HeaderDataReader.read(pathToFilter);
+                                D.display(O.sort(toSortAndDisplay, options), options);
+                            }
 
                             // If no other display options are specified, we default to the standard display.
-                        else {
-                            HeaderDataReader.read(pathToFilter);
-                            StandardDisplay.display(O.sort(toSortAndDisplay, options), options);
+                            else {
+                                HeaderDataReader.read(pathToFilter);
+                                StandardDisplay.display(O.sort(toSortAndDisplay, options), options);
+                            }
                         }
                     }
                 }

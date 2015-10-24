@@ -107,5 +107,7 @@ public class W {
         System.out.println(nonDirs + " File(s) " + totalSize + " bytes");
         System.out.println(dirs  + " Dir(s) " + freeDiskSpace + " bytes free");
 
+        System.out.println();
+
     }
 }

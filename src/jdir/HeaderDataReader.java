@@ -29,7 +29,7 @@ public class HeaderDataReader {
             process.waitFor();
             try (BufferedReader br = new BufferedReader(
                     new InputStreamReader(process.getInputStream()))) {
-                for (int i = 0; i<5; i++)
+                for (int i = 0; i<2; i++)
                 output.add(br.readLine());
             }
         } catch (IOException | InterruptedException e) {
@@ -39,6 +39,7 @@ public class HeaderDataReader {
         // Finally, we output our Header data.
         for (int z = 0; z<output.size(); z++)
             System.out.println(output.get(z));
+        System.out.println();
 
     }
 }
