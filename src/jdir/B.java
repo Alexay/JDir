@@ -15,6 +15,8 @@ public class B {
         for (Path aPath : filesForDisplay) {
 
             String fileName;
+
+            // If the user specifies the recursive option, we print the entire filepath.
             if (options.has("s"))
                 fileName = aPath.toAbsolutePath().toString();
             else

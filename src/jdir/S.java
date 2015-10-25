@@ -59,7 +59,7 @@ public class S {
 
             // Print the directory header if output isn't bare.
             if (!options.has("b"))
-                System.out.println("Directory of " + pathToFilter + "\n");
+                System.out.println("Directory of " + pathToFilter.toFile().getCanonicalPath() + "\n");
 
             // The "Bare" display option, if specified, takes precedence over other display options.
             if (options.has("b"))

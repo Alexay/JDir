@@ -46,7 +46,7 @@ public class N {
         // This block takes care of the header. The header reader method for some reason
         // displays the improper path if the given path is actually a directory,
         // so to circumvent that we only pass the path that is a file.
-        Path pathToReadForHeader = Paths.get("");
+        Path pathToReadForHeader = Paths.get(".");
         for (Path aPath : filesForDisplay)
             if(!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;

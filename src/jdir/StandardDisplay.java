@@ -25,7 +25,7 @@ public class StandardDisplay {
         // This block takes care of the header. The header reader method for some reason
         // displays the improper path if the given path is actually a directory,
         // so to circumvent that we only pass the path that is a file.
-        Path pathToReadForHeader = Paths.get("");
+        Path pathToReadForHeader = Paths.get(".");
         for (Path aPath : filesForDisplay)
             if(!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;
@@ -87,6 +87,8 @@ public class StandardDisplay {
                     fileName = fileName.toLowerCase();
                 }
 
+                String fileOwner = FileOwnerReader.read(aPath);
+
                 // This block deals with initializing the file size and putting it into the proper format.
                 String fileSize;
 
@@ -106,6 +108,7 @@ public class StandardDisplay {
                                                 "<JUNCTION>" : "<DIR>     ") : "          ") +
                                 fileSize + " " +
                                 (options.has("x")?DOSfileName:"") +
+                                (options.has("q")?fileOwner + " ":"") +
                                 fileName
                 );
             }

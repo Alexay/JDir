@@ -19,7 +19,7 @@ public class Main {
         for (int iter = 0; iter < args.length; iter++)
             args[iter] = args[iter].toLowerCase();
 
-        OptionParser parser = new OptionParser("a::o::bwdrspxnc4t:l?*");
+        OptionParser parser = new OptionParser("a::o::bwdrsqpxnc4t:l?*");
 
         parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
@@ -50,7 +50,8 @@ public class Main {
                     if (Files.exists(Paths.get(options.nonOptionArguments().get(i).toString())))
                         if (Files.isDirectory(Paths.get(options.nonOptionArguments().get(i).toString())))
                             dirPathArray.add(Paths.get(options.nonOptionArguments().get(i).toString()));
-                        else {}
+                        else {
+                        }
                     else
                         System.out.println("File \"" + options.nonOptionArguments().get(i).toString() + "\" not found.\n");
                 } catch (InvalidPathException x) {
@@ -75,6 +76,12 @@ public class Main {
                     // Let's convert our ArrayList to a normal array to save some memory.
                     Path[] toSortAndDisplay = new Path[toArray.size()];
                     toArray.toArray(toSortAndDisplay);
+
+                    // Print the directory header if output isn't bare.
+                    if (!options.has("b")) {
+                        HeaderDataReader.read(localDir);
+                        System.out.println("Directory of " + localDir.toFile().getCanonicalPath() + "\n");
+                    }
 
                     // The "Bare" display option, if specified, takes precedence over other display options.
                     if (options.has("b"))
@@ -104,8 +111,8 @@ public class Main {
                     if (options.has("s") && options.nonOptionArguments().isEmpty())
                         dirPathArray.addAll(S.listFiles(localDir));
 
-                    // In case the user did pass paths but none of them turned out to be valid, we print that
-                    // information to the user.
+                        // In case the user did pass paths but none of them turned out to be valid, we print that
+                        // information to the user.
                     else if (dirPathArray.isEmpty())
                         System.out.println("Non of the given paths are valid for displaying. \n" +
                                 "Due to the limitations of Java and the Windows command shell this application only accepts directories as arguments.\n" +
@@ -119,7 +126,7 @@ public class Main {
                         if (options.has("s"))
                             S.display(dirPathArray.get(i), options);
 
-                        // Normal processing.
+                            // Normal processing.
                         else {
                             Path pathToFilter = dirPathArray.get(i);
                             ArrayList<Path> toArray = A.filter(pathToFilter, options);
@@ -128,33 +135,30 @@ public class Main {
                             Path[] toSortAndDisplay = new Path[toArray.size()];
                             toArray.toArray(toSortAndDisplay);
 
+                            if (!options.has("b")) {
+                                HeaderDataReader.read(pathToFilter);
+                                System.out.println("Directory of " + pathToFilter.toFile().getCanonicalPath() + "\n");
+                            }
+
                             // The "Bare" display option, if specified, takes precedence over other display options.
                             if (options.has("b"))
                                 B.display(O.sort(toSortAndDisplay, options), options);
 
                                 // The old-school win95/MS-DOS display option.
-                            else if (options.has("n")) {
-                                HeaderDataReader.read(pathToFilter);
+                            else if (options.has("n"))
                                 N.display(O.sort(toSortAndDisplay, options), options);
-                            }
 
-                            // Columns display option.
-                            else if (options.has("w")) {
-                                HeaderDataReader.read(pathToFilter);
+                                // Columns display option.
+                            else if (options.has("w"))
                                 W.display(O.sort(toSortAndDisplay, options), options);
-                            }
 
-                            // Columns display option.
-                            else if (options.has("d")) {
-                                HeaderDataReader.read(pathToFilter);
+                                // Columns display option.
+                            else if (options.has("d"))
                                 D.display(O.sort(toSortAndDisplay, options), options);
-                            }
 
-                            // If no other display options are specified, we default to the standard display.
-                            else {
-                                HeaderDataReader.read(pathToFilter);
+                                // If no other display options are specified, we default to the standard display.
+                            else
                                 StandardDisplay.display(O.sort(toSortAndDisplay, options), options);
-                            }
                         }
                     }
                 }
