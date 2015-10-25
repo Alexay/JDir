@@ -33,9 +33,6 @@ public class StandardDisplay {
             }
         long freeDiskSpaceCounter = pathToReadForHeader.toFile().getUsableSpace();
 
-        // OK, let's print the header.
-        //HeaderDataReader.read(pathToReadForHeader);
-
 
         // If the user specified the "r" option, and didn't filter for certain
         // files, then we first display the ADS data.

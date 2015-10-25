@@ -3,7 +3,6 @@ package jdir;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -22,14 +21,26 @@ public class Main {
 
         OptionParser parser = new OptionParser("a::o::bwdrsqpxnc4t:l?*");
 
-        parser.accepts("a", "Display all").withOptionalArg().withValuesSeparatedBy(',');
-        parser.accepts("o", "Sort").withOptionalArg().withValuesSeparatedBy(',');
+        parser.accepts("a", "The option used to specify filters.").withOptionalArg().withValuesSeparatedBy(',');
+        parser.accepts("o", "List by files in sorted order.").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("t", "Time").withOptionalArg().defaultsTo("w");
         parser.accepts("b", "Bare output without metadata");
-        parser.accepts("w", "Displays files in neat columns");
+        parser.accepts("4", "Displays four-digit years.");
+        parser.accepts("w", "Uses wide list format.");
+        parser.accepts("l", "Uses lowercase.");
+        parser.accepts("n", "MS-DOS style DIR display format.");
+        parser.accepts("p", " Pauses after each specified amount of lines for easier reading");
+        parser.accepts("q", "Display the owner of the file.");
+        parser.accepts("r", "Enables display of alternate data stream data.");
+        parser.accepts("s", "Displays files in specified directory and all subdirectories.");
+        parser.accepts("x", "This displays the short names generated for non-8dot3 filenames." +
+                " The format is that of the standard format with the short name inserted before the long name. If no short name is present, blanks are" +
+                " displayed in its place.");
+        parser.accepts("d", "Same as wide but files are list sorted by column.");
         parser.accepts("c", "Enables thousand separators in the file size output");
         parser.accepts("?", "Displays this help prompt");
-        parser.nonOptions("files to be processed");
+        parser.nonOptions("Paths to be processed. Wildcards may be used. If no paths are given, the applicaiton runs " +
+                "in the local directory.");
 
         OptionSet options = parser.parse(args);
 
