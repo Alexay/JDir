@@ -4,8 +4,10 @@ import joptsimple.OptionSet;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,8 +82,8 @@ public class O {
         else if (arguments.contains("d") || arguments.contains("-d")) {
             Arrays.sort(toSort,  (Path path1, Path path2) -> {
                 try {
-                    DosFileAttributes attr1 = Files.readAttributes(path1, DosFileAttributes.class);
-                    DosFileAttributes attr2 = Files.readAttributes(path2, DosFileAttributes.class);
+                    DosFileAttributes attr1 = Files.readAttributes(path1, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                    DosFileAttributes attr2 = Files.readAttributes(path2, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
                     if (options.has("t")) {
 
                         String timeArgument = options.valueOf("t").toString();

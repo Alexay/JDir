@@ -73,7 +73,7 @@ public class StandardDisplay {
                 // We initialize the fileName for the conditional steps.
                 String fileName;
                 if (isJunction)
-                    fileName  = (aPath.getFileName().toString() + " " + "[" + aPath.toRealPath() + "]");
+                    fileName = (aPath.getFileName().toString() + " " + "[" + aPath.toRealPath() + "]");
                 else
                     fileName  = aPath.getFileName().toString();
 

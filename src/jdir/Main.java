@@ -3,6 +3,7 @@ package jdir;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -33,10 +34,6 @@ public class Main {
         OptionSet options = parser.parse(args);
 
         if (options.has("p")) {
-            for (int i = 0; i < args.length; i++) {
-                args[i] = args[i].replaceAll("-p", "");
-            }
-            P.display(args);
         } else {
 
             // In case the user specifies a path instead of just running the command locally,
