@@ -112,7 +112,7 @@ class StandardDisplay {
                         fileName, linePrintSetting);
             }
         } catch (IOException | InterruptedException b) {
-            System.err.println("StandardDisplay.java: " + b);
+            System.err.println("StandardDisplay.java: " + b + " " + b.getCause());
         }
 
         // After we outputted all the files, we output the footer.

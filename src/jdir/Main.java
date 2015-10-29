@@ -3,6 +3,7 @@ package jdir;
 import jdir.util.HeaderDataReader;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import joptsimple.OptionException;
 
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -38,7 +39,7 @@ public class Main {
         parser.accepts("w", "Uses wide list format.");
         parser.accepts("l", "Uses lowercase.");
         parser.accepts("n", "MS-DOS style DIR display format.");
-        parser.accepts("p", " Pauses after each specified amount of lines for easier reading");
+        parser.accepts("p", "Pauses after each specified amount of lines for easier reading.");
         parser.accepts("q", "Display the owner of the file.");
         parser.accepts("r", "Enables display of alternate data stream data.");
         parser.accepts("s", "Displays files in specified directory and all subdirectories.");
@@ -52,8 +53,14 @@ public class Main {
         parser.nonOptions("Paths to be processed. Wildcards may be used. If no paths are given, the application runs " +
                 "in the local directory.");
 
-        OptionSet options = parser.parse(args);
-
+        OptionSet options = parser.parse("");
+        try {
+            options = parser.parse(args);
+        } catch (OptionException x) {
+            System.out.println("One or more of the options you have specified is not valid. Try using the option " +
+                    "-? to display the help prompt.");
+            System.exit(-1);
+        }
         if (options.has("p")) {
             while (true) {
                 try {
@@ -94,10 +101,40 @@ public class Main {
         if (options.has("?")) {
             System.out.println("Displays a list of files and subdirectories in a directory.\n" +
                     "\n" +
-                    "Usage: [path][filename] [-A[[:]attributes]] [-B] [-C] [-D] [-L] [-N]\n" +
-                    "  [-O[[:]sortorder]] [-P] [-Q] [-R] [-S] [-T[[:]timefield]] [-W] [-X] [-4]");
-            System.out.println();
-            parser.printHelpOn(System.out);
+                    "Usage: [path] [-A[[=]attribute[,attribute]] [-B] [-C] [-D] [-L] [-N]\n" +
+                    "  [-O[[=]sortorder[,sortorder]] [-P] [-Q] [-R] [-S] [-T[[=]timefield]] [-W] [-X] [-4]\n\n" +
+                    "Examples of usage:\n" +
+                    "java jdir.Main C:\\ -a=d,h,l,i,-r -clnpqs4\n" +
+                    "java jdir.Main -bo=s\n" +
+                    "java jdir.Main C:\\Users\\larry C:\\Users\\john -c -4 -s -p -q -t=w -o=d,g\n");
+            System.out.println("-A          Displays files with specified attributes.\n" +
+                    "attributes   D  Directories                R  Read-only files\n" +
+                    "             H  Hidden files               A  Files ready for archiving\n" +
+                    "             S  System files               I  Not content indexed files\n" +
+                    "             L  Reparse Points             -  Prefix meaning not\n" +
+                    "-B          Uses bare format (no heading information or summary).\n" +
+                    "-C          Display the thousand separator in file sizes.\n" +
+                    "-D          Same as wide but files are list sorted by column.\n" +
+                    "-L          Uses lowercase.\n" +
+                    "-N          MS-DOS style DIR display format.\n" +
+                    "-O          List by files in sorted order.\n" +
+                    "sortorder    N  By name (alphabetic)       S  By size (smallest first)\n" +
+                    "             E  By extension (alphabetic)  D  By date/time (oldest first)\n" +
+                    "             G  Group directories first    -  Prefix to reverse order\n" +
+                    "-P          Pauses after each specified amount of lines for easier reading.\n" +
+                    "-Q          Display the owner of the file.\n" +
+                    "-R          Display alternate data streams of the file.\n" +
+                    "-S          Displays files in specified directory and all subdirectories.\n" +
+                    "-T          Controls which time field displayed or used for sorting\n" +
+                    "timefield   C  Creation\n" +
+                    "            A  Last Access\n" +
+                    "            W  Last Written\n" +
+                    "-W          Uses wide list format.\n" +
+                    "-X          This displays the short names generated for non-8dot3 file\n" +
+                    "            names.  The short name is inserted\n" +
+                    "            before the long name. If no short name is present, blanks are\n" +
+                    "            displayed in its place.\n" +
+                    "-4          Displays four-digit years");
         }
 
         // Now that we've handled the "help" option, let's get down to business!

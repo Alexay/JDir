@@ -69,9 +69,16 @@ class O {
         // This is the algorithm for sorting by size.
         else if (arguments.contains("s") || arguments.contains("-s")) {
             Arrays.sort(toSort, (p1, p2) -> {
-                if (arguments.contains("-s"))
-                    return Long.compare(p2.toFile().length(),p1.toFile().length());
-                return Long.compare(p1.toFile().length(),p2.toFile().length());
+                try {
+                    DosFileAttributes attr1 = Files.readAttributes(p1, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                    DosFileAttributes attr2 = Files.readAttributes(p2, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                    if (arguments.contains("-s"))
+                        return Long.compare(attr2.size(), attr1.size());
+                    return Long.compare(attr1.size(), attr2.size());
+                } catch (IOException x) {
+                    System.err.println("O.java, size sort " + x);
+                }
+                return 0;
             });
         }
 
