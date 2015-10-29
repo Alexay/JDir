@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import static jdir.Main.linePrintSetting;
 
 public class HeaderDataReader {
 
@@ -37,8 +38,8 @@ public class HeaderDataReader {
         }
 
         // Finally, we output our Header data.
-        for (int z = 0; z<output.size(); z++)
-            System.out.println(output.get(z));
+        for (int z = 0; z < output.size(); z++)
+            P.printIt(output.get(z), linePrintSetting);
         System.out.println();
 
     }

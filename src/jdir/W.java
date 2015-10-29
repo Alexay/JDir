@@ -8,6 +8,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
+import static jdir.Main.linePrintSetting;
 
 /**
  * This is the wide output mode, designed to output bare-like filenames in a Unix-like fashion of multiple columns.
@@ -31,12 +32,11 @@ public class W {
         // so to circumvent that we only pass the path that is a file.
         Path pathToReadForHeader = Paths.get(".");
         for (Path aPath : filesForDisplay)
-            if(!aPath.toFile().isDirectory()) {
+            if (!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;
                 break;
             }
         long freeDiskSpaceCounter = pathToReadForHeader.toFile().getUsableSpace();
-
 
 
         try {
@@ -56,9 +56,9 @@ public class W {
                 // We initialize the fileName for the conditional steps.
                 String fileName;
                 if (isDir)
-                    fileName  = ("[" + filesForDisplay[i].getFileName().toString() + "]");
+                    fileName = ("[" + filesForDisplay[i].getFileName().toString() + "]");
                 else
-                    fileName  = filesForDisplay[i].getFileName().toString();
+                    fileName = filesForDisplay[i].getFileName().toString();
 
                 // If the user used the "l" option, we convert the file name to lowercase characters.
                 if (options.has("l"))
@@ -67,11 +67,11 @@ public class W {
                 outputStringArray[i] = fileName;
             }
         } catch (IOException b) {
-            System.err.println("W.java: "+b);
+            System.err.println("W.java: " + b);
         }
 
         // This block prints out the columns and takes into account whether an array element exists.
-        for (int i = 0; i<outputStringArray.length; i+=3)
+        for (int i = 0; i < outputStringArray.length; i += 3)
             output.addLine(
                     outputStringArray[i],
                     i + 1 >= outputStringArray.length ? "" : outputStringArray[i + 1],
@@ -82,7 +82,7 @@ public class W {
 
         // After we outputted all the files, we output the footer.
         // Here we calculate the number of non-directory files.
-        int nonDirCounter = filesForDisplay.length-dirCounter;
+        int nonDirCounter = filesForDisplay.length - dirCounter;
 
         // Here we format the dir and non-dir counters into padded string for display
         String nonDirs = String.format("%1$" + 15 + "s", nonDirCounter);
@@ -95,8 +95,7 @@ public class W {
         if (options.has("c")) {
             totalSize = C.thousandSeparate(sizeCounter);
             freeDiskSpace = C.thousandSeparate(freeDiskSpaceCounter);
-        }
-        else {
+        } else {
             totalSize = Long.toString(sizeCounter);
             freeDiskSpace = Long.toString(freeDiskSpaceCounter);
         }
@@ -104,8 +103,8 @@ public class W {
         freeDiskSpace = String.format("%1$" + 15 + "s", freeDiskSpace);
 
         // Printing the footer
-        System.out.println(nonDirs + " File(s) " + totalSize + " bytes");
-        System.out.println(dirs  + " Dir(s) " + freeDiskSpace + " bytes free");
+        P.printIt(nonDirs + " File(s) " + totalSize + " bytes", linePrintSetting);
+        P.printIt(dirs + " Dir(s) " + freeDiskSpace + " bytes free", linePrintSetting);
 
         System.out.println();
 

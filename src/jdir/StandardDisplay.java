@@ -8,6 +8,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
+import static jdir.Main.linePrintSetting;
 
 /**
  * This class serves as one of three display modes
@@ -27,7 +28,7 @@ public class StandardDisplay {
         // so to circumvent that we only pass the path that is a file.
         Path pathToReadForHeader = Paths.get(".");
         for (Path aPath : filesForDisplay)
-            if(!aPath.toFile().isDirectory()) {
+            if (!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;
                 break;
             }
@@ -38,10 +39,10 @@ public class StandardDisplay {
         // files, then we first display the ADS data.
         if (options.has("r") &&
                 !(options.valuesOf("a").contains("h") ||
-                options.valuesOf("a").contains("s") ||
-                options.valuesOf("a").contains("-a") ||
-                options.valuesOf("a").contains("r") ||
-                options.valuesOf("a").contains("l"))
+                        options.valuesOf("a").contains("s") ||
+                        options.valuesOf("a").contains("-a") ||
+                        options.valuesOf("a").contains("r") ||
+                        options.valuesOf("a").contains("l"))
                 )
             ADSReader.display(filesForDisplay[0].getParent());
 
@@ -49,11 +50,11 @@ public class StandardDisplay {
         try {
             for (Path aPath : filesForDisplay) {
                 // First, we'll initialize the different variables that may occur in the filtering.
-               DosFileAttributes attr = Files.readAttributes(aPath, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                DosFileAttributes attr = Files.readAttributes(aPath, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
 
                 // Let's get our timestamp depending on the option given by the user.
                 String timeStamp = T.parseTime(attr, options);
-                timeStamp = String.format("%1$-" + 21 + "s" , timeStamp);
+                timeStamp = String.format("%1$-" + 21 + "s", timeStamp);
 
                 // Is it a directory?
                 boolean isDir = attr.isDirectory();
@@ -72,7 +73,7 @@ public class StandardDisplay {
                 if (isJunction)
                     fileName = (aPath.getFileName().toString() + " " + "[" + aPath.toRealPath() + "]");
                 else
-                    fileName  = aPath.getFileName().toString();
+                    fileName = aPath.getFileName().toString();
 
                 // This block deals with initializing the 8-dot-3 filename in case the user specifies the "X" option.
                 String DOSfileName = Paths.get(N.getMSDOSName(aPath.toString())).getFileName().toString();
@@ -95,27 +96,25 @@ public class StandardDisplay {
                 else
                     fileSize = Long.toString(attr.size());
 
-                fileSize =  String.format("%1$" + 15 + "s" , fileSize);
+                fileSize = String.format("%1$" + 15 + "s", fileSize);
 
                 // OK, we've initialized everything we need, let's print!
-                System.out.println(
-                        timeStamp +
-                                (isDir ?
-                                        (isJunction ?
-                                                "<JUNCTION>" : "<DIR>     ") : "          ") +
-                                fileSize + " " +
-                                (options.has("x")?DOSfileName:"") +
-                                (options.has("q")?fileOwner + " ":"") +
-                                fileName
-                );
+                P.printIt(timeStamp +
+                        (isDir ?
+                                (isJunction ?
+                                        "<JUNCTION>" : "<DIR>     ") : "          ") +
+                        fileSize + " " +
+                        (options.has("x") ? DOSfileName : "") +
+                        (options.has("q") ? fileOwner + " " : "") +
+                        fileName, linePrintSetting);
             }
         } catch (IOException | InterruptedException b) {
-            System.err.println("StandardDisplay.java: "+b);
+            System.err.println("StandardDisplay.java: " + b);
         }
 
         // After we outputted all the files, we output the footer.
         // Here we calculate the number of non-directory files.
-        int nonDirCounter = filesForDisplay.length-dirCounter;
+        int nonDirCounter = filesForDisplay.length - dirCounter;
 
         // Here we format the dir and non-dir counters into padded string for display
         String nonDirs = String.format("%1$" + 15 + "s", nonDirCounter);
@@ -128,8 +127,7 @@ public class StandardDisplay {
         if (options.has("c")) {
             totalSize = C.thousandSeparate(sizeCounter);
             freeDiskSpace = C.thousandSeparate(freeDiskSpaceCounter);
-        }
-        else {
+        } else {
             totalSize = Long.toString(sizeCounter);
             freeDiskSpace = Long.toString(freeDiskSpaceCounter);
         }
@@ -137,8 +135,8 @@ public class StandardDisplay {
         freeDiskSpace = String.format("%1$" + 15 + "s", freeDiskSpace);
 
         // Printing the footer
-        System.out.println(nonDirs + " File(s) " + totalSize + " bytes");
-        System.out.println(dirs  + " Dir(s) " + freeDiskSpace + " bytes free");
+        P.printIt(nonDirs + " File(s) " + totalSize + " bytes", linePrintSetting);
+        P.printIt(dirs + " Dir(s) " + freeDiskSpace + " bytes free", linePrintSetting);
 
         System.out.println();
 

@@ -59,13 +59,13 @@ public class A {
                     List arguments = options.valuesOf("a");
 
                     // This huge "if" statement will filter out unwanted files
-                    if (!((arguments.contains("d") && !isDir) || (arguments.contains("-d") && isDir) ||
-                            (arguments.contains("h") && !isHidden) || (arguments.contains("-h") && isHidden) ||
-                            (arguments.contains("s") && !isSystem) || (arguments.contains("-s") && isSystem) ||
-                            (arguments.contains("l") && !isJunction) || (arguments.contains("-l") && isJunction) ||
-                            (arguments.contains("r") && !isReadonly) || (arguments.contains("-r") && isReadonly) ||
-                            (arguments.contains("a") && !isForArchiving) || (arguments.contains("-a") && isForArchiving) ||
-                            (arguments.contains("i") && isIndexed) || (arguments.contains("-i") && !isIndexed))
+                    if (!(((arguments.contains("d") && !isDir) ^ (arguments.contains("-d") && isDir)) ||
+                            ((arguments.contains("h") && !isHidden) ^ (arguments.contains("-h") && isHidden)) ||
+                            ((arguments.contains("s") && !isSystem) ^ (arguments.contains("-s") && isSystem)) ||
+                            ((arguments.contains("l") && !isJunction) ^ (arguments.contains("-l") && isJunction)) ||
+                            ((arguments.contains("r") && !isReadonly) ^ (arguments.contains("-r") && isReadonly)) ||
+                            ((arguments.contains("a") && !isForArchiving) ^ (arguments.contains("-a") && isForArchiving)) ||
+                            ((arguments.contains("i") && isIndexed) ^ (arguments.contains("-i") && !isIndexed)))
                             )
                         filteredFileArray.add(file);
                 }

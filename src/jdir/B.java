@@ -3,6 +3,7 @@ package jdir;
 import joptsimple.OptionSet;
 
 import java.nio.file.Path;
+import static jdir.Main.linePrintSetting;
 
 /**
  *  This is the "Bare" display mode, which outputs only the names of the files.
@@ -26,7 +27,7 @@ public class B {
                 fileName = fileName.toLowerCase();
 
 
-            System.out.println(fileName);
+            P.printIt(fileName, linePrintSetting);
         }
     }
 }

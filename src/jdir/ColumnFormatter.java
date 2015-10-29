@@ -9,6 +9,7 @@ package jdir;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import static jdir.Main.linePrintSetting;
 
 public class ColumnFormatter {
 
@@ -38,8 +39,8 @@ public class ColumnFormatter {
         return this;
     }
 
-    public void print(){
-        System.out.println( toString() );
+    public void print() {
+        P.printIt(toString(), linePrintSetting);
     }
 
     public String toString(){

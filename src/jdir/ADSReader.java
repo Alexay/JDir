@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static jdir.Main.linePrintSetting;
 
 public class ADSReader {
 
@@ -58,8 +59,8 @@ public class ADSReader {
         }
 
         // Finally, we output our ADS data with appropriate formatting to look good with the other data.
-        for (int z = 0; z<parsedADS.size(); z++)
-            System.out.println(String.format("%1$" + 46 + "s", parsedADSSizeData.get(z)) + " " + parsedADS.get(z));
+        for (int z = 0; z < parsedADS.size(); z++)
+            P.printIt(String.format("%1$" + 46 + "s", parsedADSSizeData.get(z)) + " " + parsedADS.get(z), linePrintSetting);
 
     }
 }

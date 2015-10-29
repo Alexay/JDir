@@ -8,6 +8,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import static jdir.Main.linePrintSetting;
 
 /**
  * This class is used for converting a single argument path into an ArrayList of recursive paths to be passed on to the
@@ -59,7 +60,7 @@ public class S {
 
             // Print the directory header if output isn't bare.
             if (!options.has("b"))
-                System.out.println("Directory of " + pathToFilter.toFile().getCanonicalPath() + "\n");
+                P.printIt("Directory of " + pathToFilter.toFile().getCanonicalPath() + "\n", linePrintSetting);
 
             // The "Bare" display option, if specified, takes precedence over other display options.
             if (options.has("b"))

@@ -8,6 +8,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
+import static jdir.Main.linePrintSetting;
 
 /**
  * This is the display mode for the MS-DOS/Win95 style 8.3 filenames with their names on the left.
@@ -48,7 +49,7 @@ public class N {
         // so to circumvent that we only pass the path that is a file.
         Path pathToReadForHeader = Paths.get(".");
         for (Path aPath : filesForDisplay)
-            if(!aPath.toFile().isDirectory()) {
+            if (!aPath.toFile().isDirectory()) {
                 pathToReadForHeader = aPath;
                 break;
             }
@@ -91,24 +92,23 @@ public class N {
                 else
                     fileSize = Long.toString(attr.size());
 
-                fileSize =  String.format("%1$" + 15 + "s" , fileSize);
+                fileSize = String.format("%1$" + 15 + "s", fileSize);
 
 
                 // OK, we've initialized everything we need, let's print!
-                System.out.println(
-                        fileName +
-                                (isDir ?
-                                        "<DIR>     " : "          ") +
-                                fileSize + " " +
-                                timeStamp
-                );
+                P.printIt(fileName +
+                        (isDir ?
+                                "<DIR>     " : "          ") +
+                        fileSize + " " +
+                        timeStamp, linePrintSetting);
             }
         } catch (IOException b) {
             b.printStackTrace();
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {
+        }
 
         // Here we initializer the directory
-        int nonDirCounter = filesForDisplay.length-dirCounter;
+        int nonDirCounter = filesForDisplay.length - dirCounter;
         // Here we format the dir and non-dir counters into padded string for display
         String nonDirs = String.format("%1$" + 15 + "s", nonDirCounter);
         String dirs = String.format("%1$" + 15 + "s", dirCounter);
@@ -120,8 +120,7 @@ public class N {
         if (options.has("c")) {
             totalSize = C.thousandSeparate(sizeCounter);
             freeDiskSpace = C.thousandSeparate(freeDiskSpaceCounter);
-        }
-        else {
+        } else {
             totalSize = Long.toString(sizeCounter);
             freeDiskSpace = Long.toString(freeDiskSpaceCounter);
         }
@@ -129,8 +128,8 @@ public class N {
         freeDiskSpace = String.format("%1$" + 15 + "s", freeDiskSpace);
 
         // Printing the footer
-        System.out.println(nonDirs + " File(s) " + totalSize + " bytes");
-        System.out.println(dirs  + " Dir(s) " + freeDiskSpace + " bytes free");
+        P.printIt(nonDirs + " File(s) " + totalSize + " bytes", linePrintSetting);
+        P.printIt(dirs + " Dir(s) " + freeDiskSpace + " bytes free", linePrintSetting);
 
         System.out.println();
     }
