@@ -9,12 +9,11 @@ import java.text.DecimalFormatSymbols;
  *  USED BY: StandardDisplay.java
  */
 
-public class C {
+class C {
     public static String thousandSeparate(long fileSize) {
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
         symbols.setGroupingSeparator(' ');
         DecimalFormat formatter = new DecimalFormat("###,###.##", symbols);
-        String output = formatter.format(fileSize);
-        return output;
+        return formatter.format(fileSize);
     }
 }

@@ -12,7 +12,7 @@ import java.text.DateFormat;
  * USED BY: StandardDisplay.java
  */
 
-public class T {
+class T {
 
     public static String parseTime(DosFileAttributes attr, OptionSet options) {
 
@@ -27,30 +27,32 @@ public class T {
 
         // If the user provided no "t" option, or provided no argument to the "t" option
         // or has provided the "w" argument, we return the default timestamp - last modified.
-        if (argument.equals("w")) {
-            FileTime lastModifiedFileTime = attr.lastModifiedTime();
-            DateFormat df1 = options.has("4") ? DateFormat.getDateInstance(DateFormat.MEDIUM) : DateFormat.getDateInstance(DateFormat.SHORT);
-            DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
-            String lastModified = df1.format(lastModifiedFileTime.toMillis()) + " " + df2.format(lastModifiedFileTime.toMillis());
-            return lastModified;
-        }
+        switch (argument) {
+            case "w": {
+                FileTime lastModifiedFileTime = attr.lastModifiedTime();
+                DateFormat df1 = options.has("4") ? DateFormat.getDateInstance(DateFormat.MEDIUM) : DateFormat.getDateInstance(DateFormat.SHORT);
+                DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
+                String lastModified = df1.format(lastModifiedFileTime.toMillis()) + " " + df2.format(lastModifiedFileTime.toMillis());
+                return lastModified;
+            }
 
-        // If the user provided the "c" argument, we return the creation time.
-        else if (argument.equals("c")) {
-            FileTime creationFileTime = attr.creationTime();
-            DateFormat df1 = options.has("4") ? DateFormat.getDateInstance(DateFormat.MEDIUM) : DateFormat.getDateInstance(DateFormat.SHORT);
-            DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
-            String created = df1.format(creationFileTime.toMillis()) + " " + df2.format(creationFileTime.toMillis());
-            return created;
-        }
+            // If the user provided the "c" argument, we return the creation time.
+            case "c": {
+                FileTime creationFileTime = attr.creationTime();
+                DateFormat df1 = options.has("4") ? DateFormat.getDateInstance(DateFormat.MEDIUM) : DateFormat.getDateInstance(DateFormat.SHORT);
+                DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
+                String created = df1.format(creationFileTime.toMillis()) + " " + df2.format(creationFileTime.toMillis());
+                return created;
+            }
 
-        // If the user provided the "a" argument, we return the last access time.
-        else  { //if (options.valueOf("t") == "a")
-            FileTime lastAccessFileTime = attr.lastAccessTime();
-            DateFormat df1 = options.has("4") ? DateFormat.getDateInstance(DateFormat.MEDIUM) : DateFormat.getDateInstance(DateFormat.SHORT);
-            DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
-            String lastAccessed = df1.format(lastAccessFileTime.toMillis()) + " " + df2.format(lastAccessFileTime.toMillis());
-            return lastAccessed;
+            // If the user provided the "a" argument, we return the last access time.
+            default: { //if (options.valueOf("t") == "a")
+                FileTime lastAccessFileTime = attr.lastAccessTime();
+                DateFormat df1 = options.has("4") ? DateFormat.getDateInstance(DateFormat.MEDIUM) : DateFormat.getDateInstance(DateFormat.SHORT);
+                DateFormat df2 = DateFormat.getTimeInstance(DateFormat.SHORT);
+                String lastAccessed = df1.format(lastAccessFileTime.toMillis()) + " " + df2.format(lastAccessFileTime.toMillis());
+                return lastAccessed;
+            }
         }
     }
 }

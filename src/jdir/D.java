@@ -10,6 +10,7 @@ package jdir;
  */
 
 
+import jdir.util.ColumnFormatter;
 import joptsimple.OptionSet;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import static jdir.Main.linePrintSetting;
 
 
 
-public class D {
+class D {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
         // We begin by initializing some counters for the footer stats.

@@ -1,10 +1,12 @@
-package jdir;
+package jdir.util;
 
 /**
  * Used to format W and D's output in a column format
  *
  * USED BY: W.java, D.java
  */
+
+import jdir.P;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,9 +15,9 @@ import static jdir.Main.linePrintSetting;
 
 public class ColumnFormatter {
 
-    List<List<String>> lines = new ArrayList<>();
-    List<Integer> maxLengths = new ArrayList<>();
-    int numColumns = -1;
+    private List<List<String>> lines = new ArrayList<>();
+    private List<Integer> maxLengths = new ArrayList<>();
+    private int numColumns = -1;
 
     public ColumnFormatter addLine(String... line) {
 

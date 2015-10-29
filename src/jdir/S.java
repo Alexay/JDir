@@ -1,5 +1,6 @@
 package jdir;
 
+import jdir.util.HeaderDataReader;
 import joptsimple.OptionSet;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import static jdir.Main.linePrintSetting;
  *
  * USED BY: Main.java
  */
-public class S {
+class S {
 
     // This is the method we use for getting an ArrayList of all the paths within a a path recursively.
     public static ArrayList<Path> listFiles(Path path) throws IOException {
@@ -48,9 +49,8 @@ public class S {
             HeaderDataReader.read(dirPathArray.get(0));
 
         // For each given path we will perform the needed operations.
-        for (int i = 0; i < dirPathArray.size(); i++) {
+        for (Path pathToFilter : dirPathArray) {
 
-            Path pathToFilter = dirPathArray.get(i);
             ArrayList<Path> toArray = A.filter(pathToFilter, options);
 
 

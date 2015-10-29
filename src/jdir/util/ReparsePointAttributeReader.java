@@ -1,4 +1,4 @@
-package jdir;
+package jdir.util;
 
 import java.lang.reflect.Method;
 import java.nio.file.attribute.DosFileAttributes;

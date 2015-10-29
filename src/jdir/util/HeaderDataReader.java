@@ -1,10 +1,12 @@
-package jdir;
+package jdir.util;
 
 /**
  *  Use this class to get a header for the Standard Display output mode.
  *
  *  USED BY: StandardDisplay.java
  */
+
+import jdir.P;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,8 +40,7 @@ public class HeaderDataReader {
         }
 
         // Finally, we output our Header data.
-        for (int z = 0; z < output.size(); z++)
-            P.printIt(output.get(z), linePrintSetting);
+        for (String anOutput : output) P.printIt(anOutput, linePrintSetting);
         System.out.println();
 
     }

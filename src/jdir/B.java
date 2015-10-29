@@ -10,7 +10,7 @@ import static jdir.Main.linePrintSetting;
  *
  *  USED BY: Main.java
  */
-public class B {
+class B {
 
     public static void display(Path[] filesForDisplay, OptionSet options) {
         for (Path aPath : filesForDisplay) {

@@ -1,5 +1,8 @@
 package jdir;
 
+import jdir.util.ADSReader;
+import jdir.util.FileOwnerReader;
+import jdir.util.ReparsePointAttributeReader;
 import joptsimple.OptionSet;
 
 import java.io.IOException;
@@ -16,7 +19,7 @@ import static jdir.Main.linePrintSetting;
  * USED BY: Main.java
  */
 
-public class StandardDisplay {
+class StandardDisplay {
     public static void display(Path[] filesForDisplay, OptionSet options) {
 
         // We begin by initializing some counters for the footer stats.

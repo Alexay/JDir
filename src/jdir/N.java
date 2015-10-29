@@ -16,16 +16,14 @@ import static jdir.Main.linePrintSetting;
  * USED BY: Main.java
  */
 
-public class N {
+class N {
 
     public static String getMSDOSName(String fileName)
             throws IOException, InterruptedException {
 
-        String path = fileName;
-
         Process process =
                 Runtime.getRuntime().exec(
-                        "cmd /c for %I in (\"" + path + "\") do @echo %~fsI");
+                        "cmd /c for %I in (\"" + fileName + "\") do @echo %~fsI");
 
         process.waitFor();
 

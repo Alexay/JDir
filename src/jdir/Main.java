@@ -1,5 +1,6 @@
 package jdir;
 
+import jdir.util.HeaderDataReader;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 

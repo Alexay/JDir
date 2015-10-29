@@ -1,5 +1,7 @@
 package jdir;
 
+import jdir.util.IndexedAttributeReader;
+import jdir.util.ReparsePointAttributeReader;
 import joptsimple.OptionSet;
 
 import java.io.IOException;
@@ -15,7 +17,7 @@ import java.util.List;
  **/
 
 
-public class A {
+class A {
     public static ArrayList<Path> filter(Path dirPath, OptionSet options) {
         ArrayList<Path> filteredFileArray = new ArrayList<>();
 

@@ -1,8 +1,10 @@
-package jdir;
+package jdir.util;
 
 /**
  * Use this class to parse NTFS's Alternate Data Stream in Windows directories
  */
+
+import jdir.P;
 
 import java.io.BufferedReader;
 import java.io.IOException;
