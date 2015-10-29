@@ -1,25 +1,24 @@
 package jdir;
 
-import java.io.IOException;
+import java.util.Scanner;
 
-/**
- *   An output mode that allows for any of the display modes to be printed page-by-page using the Windows "more"
- *   command with the /E option to allow for the user to press <SPACE> key for page scrolling.
- */
 public class P {
 
-    public static void display(String[] args) throws IOException, InterruptedException {
-        String out = "";
-        for (int i = 0; i<args.length; i++) {
-            out += args[i]  + " ";
+    static int linesPrinted = 0;
+
+    public static void printIt(String s, int lines) {
+        if (lines == -10)
+            System.out.println(s);
+        else if (lines-1 <= linesPrinted) {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Press ENTER to continue...");
+            scan.nextLine();
+            linesPrinted = 0;
+            System.out.println(s);
+            linesPrinted++;
+        } else {
+            System.out.println(s);
+            linesPrinted++;
         }
-
-        Process process =
-                Runtime.getRuntime().exec("cmd /c java Main " + out + " | more /E");
-        process.waitFor();
-        byte[] data = new byte[65536];
-        int size = process.getInputStream().read(data);
-
-        System.out.println(data);
     }
 }

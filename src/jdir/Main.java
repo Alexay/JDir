@@ -21,7 +21,7 @@ public class Main {
 
         OptionParser parser = new OptionParser("a::o::bwdrsqpxnc4t:l?*");
 
-        parser.accepts("a", "The option used to specify filters.").withOptionalArg().withValuesSeparatedBy(',');
+        parser.accepts("a", "Displays files with specified attributes.").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("o", "List by files in sorted order.").withOptionalArg().withValuesSeparatedBy(',');
         parser.accepts("t", "Time").withOptionalArg().defaultsTo("w");
         parser.accepts("b", "Bare output without metadata");
@@ -69,6 +69,11 @@ public class Main {
 
             // If the user has the help options in any of the options parser the app just displays the help prompt.
             if (options.has("?")) {
+                System.out.println("Displays a list of files and subdirectories in a directory.\n" +
+                        "\n" +
+                        "Usage: [path][filename] [-A[[:]attributes]] [-B] [-C] [-D] [-L] [-N]\n" +
+                        "  [-O[[:]sortorder]] [-P] [-Q] [-R] [-S] [-T[[:]timefield]] [-W] [-X] [-4]");
+                System.out.println();
                 parser.printHelpOn(System.out);
             }
 
