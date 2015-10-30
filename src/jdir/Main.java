@@ -160,16 +160,16 @@ public class Main {
                     B.display(O.sort(toSortAndDisplay, options), options);
 
                     // Columns display option.
+                else if (options.has("n"))
+                    N.display(O.sort(toSortAndDisplay, options), options);
+
+                    // Columns display option.
                 else if (options.has("w"))
                     W.display(O.sort(toSortAndDisplay, options), options);
 
-                    // Columns display option.
-                else if (options.has("d"))
-                    W.display(O.sort(toSortAndDisplay, options), options);
-
                     // The old-school win95/MS-DOS display option.
-                else if (options.has("n"))
-                    N.display(O.sort(toSortAndDisplay, options), options);
+                else if (options.has("d"))
+                    D.display(O.sort(toSortAndDisplay, options), options);
 
                     // If no other display options are specified, we default to the standard display.
                 else
