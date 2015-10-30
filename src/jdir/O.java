@@ -1,6 +1,6 @@
 package jdir;
 
-import joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionSet;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -1,6 +1,6 @@
 package jdir;
 
-import joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionSet;
 
 import java.nio.file.Path;
 import static jdir.Main.linePrintSetting;

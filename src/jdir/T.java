@@ -1,6 +1,6 @@
 package jdir;
 
-import joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionSet;
 
 import java.nio.file.attribute.DosFileAttributes;
 import java.nio.file.attribute.FileTime;

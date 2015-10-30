@@ -11,7 +11,7 @@ package jdir;
 
 
 import jdir.util.ColumnFormatter;
-import joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionSet;
 
 import java.io.IOException;
 import java.nio.file.Files;

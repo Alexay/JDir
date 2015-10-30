@@ -1,7 +1,7 @@
 package jdir;
 
 import jdir.util.HeaderDataReader;
-import joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionSet;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;

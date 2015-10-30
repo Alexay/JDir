@@ -3,7 +3,7 @@ package jdir;
 import jdir.util.ADSReader;
 import jdir.util.FileOwnerReader;
 import jdir.util.ReparsePointAttributeReader;
-import joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionSet;
 
 import java.io.IOException;
 import java.nio.file.Files;

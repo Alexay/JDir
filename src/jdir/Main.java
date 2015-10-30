@@ -1,9 +1,9 @@
 package jdir;
 
 import jdir.util.HeaderDataReader;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import joptsimple.OptionException;
+import jdir.util.joptsimple.OptionParser;
+import jdir.util.joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionException;
 
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;

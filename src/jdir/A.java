@@ -2,7 +2,7 @@ package jdir;
 
 import jdir.util.IndexedAttributeReader;
 import jdir.util.ReparsePointAttributeReader;
-import joptsimple.OptionSet;
+import jdir.util.joptsimple.OptionSet;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -52,7 +52,7 @@ class A {
 
                 // If neither options nor arguments are given, we filter for the default configuration.
                 if (!options.has("a")) {
-                    if (!isHidden || !isSystem)
+                    if (!isHidden)
                         filteredFileArray.add(file);
                 }
 
@@ -60,15 +60,16 @@ class A {
                 else if (options.hasArgument("a")) {
                     List arguments = options.valuesOf("a");
 
-                    // This huge "if" statement will filter out unwanted files
-                    if (!((arguments.contains("d") && !isDir) || (arguments.contains("-d") && isDir) ||
-                            (arguments.contains("h") && !isHidden) || (arguments.contains("-h") && isHidden) ||
-                            (arguments.contains("s") && !isSystem) || (arguments.contains("-s") && isSystem) ||
-                            (arguments.contains("l") && !isJunction) || (arguments.contains("-l") && isJunction) ||
-                            (arguments.contains("r") && !isReadonly) || (arguments.contains("-r") && isReadonly) ||
-                            (arguments.contains("a") && !isForArchiving) || (arguments.contains("-a") && isForArchiving) ||
-                            (arguments.contains("i") && isIndexed) || (arguments.contains("-i") && !isIndexed))
-                            )
+                    // This huge "if" statement will filter out unwanted files and account for when a user enters
+                    // mutually exclusive arguments such as h and -h at the same time.
+                    if (!(((arguments.contains("d") && !isDir) || (arguments.contains("-d") && isDir)) != (arguments.contains("d") && arguments.contains("-d")) ||
+                            ((arguments.contains("h") && !isHidden) || (arguments.contains("-h") && isHidden)) != (arguments.contains("h") && arguments.contains("-h")) ||
+                            ((arguments.contains("s") && !isSystem) || (arguments.contains("-s") && isSystem)) != (arguments.contains("s") && arguments.contains("-s")) ||
+                            ((arguments.contains("l") && !isJunction) || (arguments.contains("-l") && isJunction)) != (arguments.contains("l") && arguments.contains("-l")) ||
+                            ((arguments.contains("r") && !isReadonly) || (arguments.contains("-r") && isReadonly)) != (arguments.contains("r") && arguments.contains("-r")) ||
+                            ((arguments.contains("a") && !isForArchiving) || (arguments.contains("-a") && isForArchiving)) != (arguments.contains("a") && arguments.contains("-a")) ||
+                            ((arguments.contains("i") && isIndexed) || (arguments.contains("-i") && !isIndexed)) != (arguments.contains("i") && arguments.contains("-i"))
+                            ))
                         filteredFileArray.add(file);
                 }
 
